@@ -1,19 +1,39 @@
 package com.example.PetCare.model;
-import lombok.AllArgsConstructor;
+
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
+@Entity
+@Table(name = "usuario")
 @Data
-
+@NoArgsConstructor
 public class Usuario {
-    private int idUsuario;
-    private String nombre;
-    private String apellido;
-    private String telefono;
-    private String email;
-    private String direccion;
-    private boolean activo;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_usuario")
+    private Integer idUsuario;
+
+    @Column(nullable = false)
+    private String nombre;
+
+    @Column(nullable = false)
+    private String apellido;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    private String telefono;
+    private String direccion;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RolUsuario rol;
+
+    @Column(nullable = false)
+    private boolean activo = true;
 }
