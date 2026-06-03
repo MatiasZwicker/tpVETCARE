@@ -55,8 +55,10 @@ public class AuthController {
     // Función para iniciar sesión.
     // Recibe email, contraseña y rol seleccionado. Verifica que el usuario exista,
     // esté activo, la contraseña coincida y el rol sea correcto.
-    // Si los datos son válidos, guarda el objeto Usuario en sesión y redirige
-    // al dashboard correspondiente según el rol.
+    // Si los datos son válidos, guarda el objeto Usuario en sesión.
+    // Si el usuario tiene debeCambiarPassword = true (profesional aprobado con
+    // contraseña default), redirige a /cambiar-password en vez del dashboard.
+    // En caso normal, redirige al dashboard correspondiente según el rol.
     // - Matias Z.
     @PostMapping("/login")
     public String login(
@@ -67,9 +69,13 @@ public class AuthController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-            RolUsuario rolEnum = mapRol(rol);  // el mapRol convierte el string en Enum
+            RolUsuario rolEnum = mapRol(rol);
             Usuario usuario = authService.autenticar(email, password, rolEnum);
             session.setAttribute("usuario", usuario);
+
+            if (usuario.isDebeCambiarPassword()) {
+                return "redirect:/cambiar-password";
+            }
 
             String dashboardUrl = switch (usuario.getRol()) {
                 case USUARIO -> "/dashboard/usuario";
@@ -124,6 +130,65 @@ public class AuthController {
             model.addAttribute("logueado", false);
         }
         return "sesion";
+    }
+
+    // Muestra el formulario para cambiar la contraseña obligatorio.
+    // Accede un profesional que inició sesión con la contraseña default.
+    // Si el usuario no está logueado o no necesita cambiar la contraseña,
+    // redirige al home.
+    // - Matias Z.
+    @GetMapping("/cambiar-password")
+    public String mostrarCambiarPassword(HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || !usuario.isDebeCambiarPassword()) {
+            return "redirect:/";
+        }
+        return "cambiar-password";
+    }
+
+    // Procesa el cambio de contraseña obligatorio.
+    // Valida que la nueva contraseña y su confirmación coincidan,
+    // actualiza la contraseña en BD y desactiva debeCambiarPassword.
+    // Redirige al dashboard correspondiente al rol.
+    // - Matias Z.
+    @PostMapping("/cambiar-password")
+    public String procesarCambiarPassword(
+            @RequestParam String nuevaPassword,
+            @RequestParam String confirmarPassword,
+            HttpSession session,
+            RedirectAttributes redirectAttributes
+    ) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || !usuario.isDebeCambiarPassword()) {
+            return "redirect:/";
+        }
+
+        if (!nuevaPassword.equals(confirmarPassword)) {
+            redirectAttributes.addFlashAttribute("error", "Las contraseñas no coinciden");
+            return "redirect:/cambiar-password";
+        }
+
+        if (nuevaPassword.length() < 6) {
+            redirectAttributes.addFlashAttribute("error", "La contraseña debe tener al menos 6 caracteres");
+            return "redirect:/cambiar-password";
+        }
+
+        authService.cambiarPassword(usuario, nuevaPassword);
+
+        Usuario usuarioActualizado = authService.autenticar(usuario.getEmail(), nuevaPassword, usuario.getRol());
+        session.setAttribute("usuario", usuarioActualizado);
+
+        String dashboardUrl = switch (usuarioActualizado.getRol()) {
+            case USUARIO -> "/dashboard/usuario";
+            case ADMINISTRADOR -> "/dashboard/administrador";
+            case DUENO -> "/dashboard/dueno";
+            case VETERINARIO -> "/dashboard/veterinario";
+            case PASEADOR -> "/dashboard/paseador";
+            case PELUQUERO -> "/dashboard/peluquero";
+            case ADIESTRADOR -> "/dashboard/adiestrador";
+            case CUIDADOR -> "/dashboard/cuidador";
+        };
+        return "redirect:" + dashboardUrl;
     }
 
     @GetMapping("/dashboard/administrador")

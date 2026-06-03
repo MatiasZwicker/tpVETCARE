@@ -1,8 +1,12 @@
 package com.example.PetCare.Controller;
 
+import com.example.PetCare.Service.AuthService;
+import com.example.PetCare.model.EstadoPostulacion;
 import com.example.PetCare.model.PostulacionProfesional;
 import com.example.PetCare.model.RolUsuario;
+import com.example.PetCare.model.Usuario;
 import com.example.PetCare.repository.PostulacionProfesionalRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +20,11 @@ import java.util.List;
 public class PostulacionController {
 
     private final PostulacionProfesionalRepository postulacionRepository;
+    private final AuthService authService;
 
-    public PostulacionController(PostulacionProfesionalRepository postulacionRepository) {
+    public PostulacionController(PostulacionProfesionalRepository postulacionRepository, AuthService authService) {
         this.postulacionRepository = postulacionRepository;
+        this.authService = authService;
     }
 
     // Muestra el formulario público de postulación.
@@ -73,6 +79,101 @@ public class PostulacionController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/postular";
         }
+    }
+
+    // Muestra el panel de administración de postulaciones.
+    // Lista las postulaciones pendientes y el historial de aprobadas/rechazadas.
+    // Solo accesible para usuarios con rol ADMINISTRADOR.
+    // - Matias Z.
+    @GetMapping("/admin/postulaciones")
+    public String listarPostulaciones(HttpSession session, Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || usuario.getRol() != RolUsuario.ADMINISTRADOR) {
+            return "redirect:/";
+        }
+
+        List<PostulacionProfesional> pendientes = postulacionRepository.findByEstado(EstadoPostulacion.PENDIENTE);
+        List<PostulacionProfesional> todas = postulacionRepository.findAll();
+
+        model.addAttribute("pendientes", pendientes);
+        model.addAttribute("todas", todas);
+        return "admin-postulaciones";
+    }
+
+    // Aprueba una postulación pendiente.
+    // Toma los datos de la postulación, crea un usuario con el rol solicitado
+    // y contraseña default (PetCare123). Marca al usuario para que deba
+    // cambiar la contraseña en su primer inicio de sesión.
+    // - Matias Z.
+    @PostMapping("/admin/postulaciones/aprobar")
+    public String aprobarPostulacion(
+            @RequestParam Integer id,
+            HttpSession session,
+            RedirectAttributes redirectAttributes
+    ) {
+        Usuario admin = (Usuario) session.getAttribute("usuario");
+        if (admin == null || admin.getRol() != RolUsuario.ADMINISTRADOR) {
+            return "redirect:/";
+        }
+
+        try {
+            PostulacionProfesional postulacion = postulacionRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Postulación no encontrada"));
+
+            if (postulacion.getEstado() != EstadoPostulacion.PENDIENTE) {
+                throw new IllegalArgumentException("La postulación ya fue procesada");
+            }
+
+            authService.crearUsuarioProfesional(
+                    postulacion.getNombre(),
+                    postulacion.getApellido(),
+                    postulacion.getEmail(),
+                    postulacion.getRolSolicitado()
+            );
+
+            postulacion.setEstado(EstadoPostulacion.APROBADA);
+            postulacionRepository.save(postulacion);
+
+            redirectAttributes.addFlashAttribute("mensaje",
+                    "Postulación aprobada. Se creó el usuario con contraseña default PetCare123.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/admin/postulaciones";
+    }
+
+    // Rechaza una postulación pendiente.
+    // Simplemente cambia el estado a RECHAZADA sin crear ningún usuario.
+    // - Matias Z.
+    @PostMapping("/admin/postulaciones/rechazar")
+    public String rechazarPostulacion(
+            @RequestParam Integer id,
+            HttpSession session,
+            RedirectAttributes redirectAttributes
+    ) {
+        Usuario admin = (Usuario) session.getAttribute("usuario");
+        if (admin == null || admin.getRol() != RolUsuario.ADMINISTRADOR) {
+            return "redirect:/";
+        }
+
+        try {
+            PostulacionProfesional postulacion = postulacionRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Postulación no encontrada"));
+
+            if (postulacion.getEstado() != EstadoPostulacion.PENDIENTE) {
+                throw new IllegalArgumentException("La postulación ya fue procesada");
+            }
+
+            postulacion.setEstado(EstadoPostulacion.RECHAZADA);
+            postulacionRepository.save(postulacion);
+
+            redirectAttributes.addFlashAttribute("mensaje", "Postulación rechazada.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/admin/postulaciones";
     }
 
     // Convierte el string del rol profesional al enum correspondiente.

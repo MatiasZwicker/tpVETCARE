@@ -65,4 +65,34 @@ public class AuthService {
 
         return usuario;
     }
+
+    // Crea un usuario profesional cuando el administrador aprueba una postulación.
+    // Asigna el rol solicitado, una contraseña default (PetCare123) y marca al
+    // usuario para que deba cambiarla en su primer inicio de sesión.
+    // - Matias Z.
+    public Usuario crearUsuarioProfesional(String nombre, String apellido, String email, RolUsuario rol) {
+        if (usuarioRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("El email ya está registrado en el sistema");
+        }
+
+        Usuario usuario = new Usuario();
+        usuario.setNombre(nombre);
+        usuario.setApellido(apellido);
+        usuario.setEmail(email);
+        usuario.setPassword(passwordEncoder.encode("PetCare123"));
+        usuario.setRol(rol);
+        usuario.setActivo(true);
+        usuario.setDebeCambiarPassword(true); //bandera que indica que el profesional aun debe cambiar la contraseña
+
+        return usuarioRepository.save(usuario);
+    }
+
+    // Cambia la contraseña de un usuario y desactiva la bandera debeCambiarPassword.
+    // Se usa cuando un profesional inicia sesión por primera vez con la contraseña default.
+    // - Matias Z.
+    public void cambiarPassword(Usuario usuario, String nuevaPassword) {
+        usuario.setPassword(passwordEncoder.encode(nuevaPassword));
+        usuario.setDebeCambiarPassword(false);
+        usuarioRepository.save(usuario);
+    }
 }
