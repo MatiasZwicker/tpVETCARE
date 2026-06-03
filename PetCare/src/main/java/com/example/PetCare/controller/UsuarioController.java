@@ -41,7 +41,8 @@ public class UsuarioController {
     @PutMapping("/{id}")
     public UsuarioDTO actualizar(@PathVariable Integer id,@RequestBody UsuarioDTO dto) {
         boolean actualizado = usuarioService.actualizar(id, dto);
-        return dto;
+        if (actualizado){return dto;}
+        return null;
     }
 
     @DeleteMapping("/{id}")

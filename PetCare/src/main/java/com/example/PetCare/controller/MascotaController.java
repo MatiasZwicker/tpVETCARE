@@ -24,37 +24,28 @@ public class MascotaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MascotaDTO> buscarPorId(@PathVariable Integer id) {
-        return mascotaService.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public MascotaDTO buscarPorId(@PathVariable Integer id) {
+        return mascotaService.buscarPorId(id).get();
     }
 
     @PostMapping
-    public ResponseEntity<String> crear(@RequestBody MascotaDTO dto) {
+    public MascotaDTO crear(@RequestBody MascotaDTO dto) {
         boolean creado = mascotaService.crear(dto);
         if (creado) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Mascota creada correctamente");
-        }
-        return ResponseEntity.badRequest().body("No se pudo crear la mascota");
+            return dto;
+        }else return null;
+
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id,
-                                             @RequestBody MascotaDTO dto) {
+    public MascotaDTO actualizar(@PathVariable Integer id,@RequestBody MascotaDTO dto) {
         boolean actualizado = mascotaService.actualizar(id, dto);
-        if (actualizado) {
-            return ResponseEntity.ok("Mascota actualizada correctamente");
-        }
-        return ResponseEntity.notFound().build();
+        if (actualizado){return dto;}
+        return null;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminar(@PathVariable Integer id) {
+    public void eliminar(@PathVariable Integer id) {
         boolean eliminado = mascotaService.eliminar(id);
-        if (eliminado) {
-            return ResponseEntity.ok("Mascota eliminada correctamente");
-        }
-        return ResponseEntity.notFound().build();
     }
 }
