@@ -1,6 +1,7 @@
 package com.example.PetCare.controller;
 
 import com.example.PetCare.dto.MascotaDTO;
+import com.example.PetCare.model.Mascota;
 import com.example.PetCare.service.MascotaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,14 @@ public class MascotaController {
     @GetMapping("/{id}")
     public MascotaDTO buscarPorId(@PathVariable Integer id) {
         return mascotaService.buscarPorId(id).get();
+    }
+    @GetMapping("/especie/{especie}")
+    public List<Mascota> buscarPorEspecie(@PathVariable String especie) {
+        return mascotaService.buscarPorEspecie(especie);
+    }
+    @GetMapping("/raza/{raza}")
+    public List<Mascota> buscarPorRaza(@PathVariable String raza) {
+        return mascotaService.buscarPorRaza(raza);
     }
 
     @PostMapping

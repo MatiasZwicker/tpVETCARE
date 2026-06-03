@@ -33,6 +33,14 @@ public class MascotaService {
                 .map(this::toDTO);
     }
 
+    public List<Mascota> buscarPorEspecie(String especie) {
+        return mascotaRepository.findByEspecieAndActivoTrue(especie);
+    }
+    public List<Mascota> buscarPorRaza(String raza) {
+        return mascotaRepository.findByRazaAndActivoTrue(raza);
+    }
+
+
     public boolean crear(MascotaDTO dto) {
         Usuario usuario = usuarioRepository.findById(dto.getIdUsuario()).orElse(null);
         if (usuario == null) {
