@@ -58,9 +58,13 @@ public class AuthController {
             session.setAttribute("usuario", usuario);
 
             String dashboardUrl = switch (usuario.getRol()) {
+                case ADMINISTRADOR -> "/dashboard/administrador";
                 case DUENO -> "/dashboard/dueno";
-                case USUARIO -> "/dashboard/usuario";
-                case VETERINARIA -> "/dashboard/veterinaria";
+                case VETERINARIO -> "/dashboard/veterinario";
+                case PASEADOR -> "/dashboard/paseador";
+                case PELUQUERO -> "/dashboard/peluquero";
+                case ADIESTRADOR -> "/dashboard/adiestrador";
+                case CUIDADOR -> "/dashboard/cuidador";
             };
             return "redirect:" + dashboardUrl;
         } catch (IllegalArgumentException e) {
@@ -75,6 +79,14 @@ public class AuthController {
         return "redirect:/";
     }
 
+    @GetMapping("/dashboard/administrador")
+    public String dashboardAdministrador(HttpSession session) {
+        if (session.getAttribute("usuario") == null) {
+            return "redirect:/";
+        }
+        return "dashboard-administrador";
+    }
+
     @GetMapping("/dashboard/dueno")
     public String dashboardDueno(HttpSession session, RedirectAttributes redirectAttributes) {
         if (session.getAttribute("usuario") == null) {
@@ -83,27 +95,55 @@ public class AuthController {
         return "dashboard-dueno";
     }
 
-    @GetMapping("/dashboard/usuario")
-    public String dashboardUsuario(HttpSession session, RedirectAttributes redirectAttributes) {
-        if (session.getAttribute("usuario") == null) {
-            return "redirect:/";
-        }
-        return "dashboard-usuario";
-    }
-
-    @GetMapping("/dashboard/veterinaria")
-    public String dashboardVeterinaria(HttpSession session, RedirectAttributes redirectAttributes) {
+    @GetMapping("/dashboard/veterinario")
+    public String dashboardVeterinario(HttpSession session) {
         if (session.getAttribute("usuario") == null) {
             return "redirect:/";
         }
         return "dashboard-veterinario";
     }
 
+    @GetMapping("/dashboard/paseador")
+    public String dashboardPaseador(HttpSession session) {
+        if (session.getAttribute("usuario") == null) {
+            return "redirect:/";
+        }
+        return "dashboard-paseador";
+    }
+
+    @GetMapping("/dashboard/peluquero")
+    public String dashboardPeluquero(HttpSession session) {
+        if (session.getAttribute("usuario") == null) {
+            return "redirect:/";
+        }
+        return "dashboard-peluquero";
+    }
+
+    @GetMapping("/dashboard/adiestrador")
+    public String dashboardAdiestrador(HttpSession session) {
+        if (session.getAttribute("usuario") == null) {
+            return "redirect:/";
+        }
+        return "dashboard-adiestrador";
+    }
+
+    @GetMapping("/dashboard/cuidador")
+    public String dashboardCuidador(HttpSession session) {
+        if (session.getAttribute("usuario") == null) {
+            return "redirect:/";
+        }
+        return "dashboard-cuidador";
+    }
+
     private RolUsuario mapRol(String rol) {
         return switch (rol.toLowerCase()) {
+            case "administrador" -> RolUsuario.ADMINISTRADOR;
             case "dueno" -> RolUsuario.DUENO;
-            case "usuario" -> RolUsuario.USUARIO;
-            case "veterinario" -> RolUsuario.VETERINARIA;
+            case "veterinario" -> RolUsuario.VETERINARIO;
+            case "paseador" -> RolUsuario.PASEADOR;
+            case "peluquero" -> RolUsuario.PELUQUERO;
+            case "adiestrador" -> RolUsuario.ADIESTRADOR;
+            case "cuidador" -> RolUsuario.CUIDADOR;
             default -> throw new IllegalArgumentException("Rol inválido");
         };
     }

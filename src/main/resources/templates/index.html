@@ -100,9 +100,9 @@
             letter-spacing: 0.5px;
         }
 
-        .role-options { display: flex; gap: 10px; }
+        .role-options { display: flex; gap: 8px; flex-wrap: wrap; }
 
-        .role-card { flex: 1; cursor: pointer; }
+        .role-card { cursor: pointer; }
         .role-card input { display: none; }
 
         .role-content {
@@ -110,7 +110,8 @@
             flex-direction: column;
             align-items: center;
             gap: 6px;
-            padding: 14px 8px;
+            padding: 12px 8px;
+            min-width: 80px;
             border: 2px solid #e8e8ef;
             border-radius: 14px;
             transition: all 0.3s ease;
@@ -258,17 +259,45 @@
                                 </div>
                             </label>
                             <label class="role-card">
-                                <input type="radio" name="rol" value="usuario">
+                                <input type="radio" name="rol" value="veterinario">
                                 <div class="role-content">
-                                    <span class="role-icon">👥</span>
-                                    <span class="role-text">Usuario</span>
+                                    <span class="role-icon">👨‍⚕️</span>
+                                    <span class="role-text">Veterinario</span>
                                 </div>
                             </label>
                             <label class="role-card">
-                                <input type="radio" name="rol" value="veterinario">
+                                <input type="radio" name="rol" value="administrador">
                                 <div class="role-content">
-                                    <span class="role-icon">👨‍⚖️</span>
-                                    <span class="role-text">Veterinario</span>
+                                    <span class="role-icon">⚙️</span>
+                                    <span class="role-text">Admin</span>
+                                </div>
+                            </label>
+                            <label class="role-card">
+                                <input type="radio" name="rol" value="paseador">
+                                <div class="role-content">
+                                    <span class="role-icon">🐕</span>
+                                    <span class="role-text">Paseador</span>
+                                </div>
+                            </label>
+                            <label class="role-card">
+                                <input type="radio" name="rol" value="peluquero">
+                                <div class="role-content">
+                                    <span class="role-icon">✂️</span>
+                                    <span class="role-text">Peluquero</span>
+                                </div>
+                            </label>
+                            <label class="role-card">
+                                <input type="radio" name="rol" value="adiestrador">
+                                <div class="role-content">
+                                    <span class="role-icon">🎯</span>
+                                    <span class="role-text">Adiestrador</span>
+                                </div>
+                            </label>
+                            <label class="role-card">
+                                <input type="radio" name="rol" value="cuidador">
+                                <div class="role-content">
+                                    <span class="role-icon">🏠</span>
+                                    <span class="role-text">Cuidador</span>
                                 </div>
                             </label>
                         </div>
@@ -305,17 +334,45 @@
                                 </div>
                             </label>
                             <label class="role-card">
-                                <input type="radio" name="rol" value="usuario">
+                                <input type="radio" name="rol" value="veterinario">
                                 <div class="role-content">
-                                    <span class="role-icon">👥</span>
-                                    <span class="role-text">Usuario</span>
+                                    <span class="role-icon">👨‍⚕️</span>
+                                    <span class="role-text">Veterinario</span>
                                 </div>
                             </label>
                             <label class="role-card">
-                                <input type="radio" name="rol" value="veterinario">
+                                <input type="radio" name="rol" value="administrador">
                                 <div class="role-content">
-                                    <span class="role-icon">👨‍⚖️</span>
-                                    <span class="role-text">Veterinario</span>
+                                    <span class="role-icon">⚙️</span>
+                                    <span class="role-text">Admin</span>
+                                </div>
+                            </label>
+                            <label class="role-card">
+                                <input type="radio" name="rol" value="paseador">
+                                <div class="role-content">
+                                    <span class="role-icon">🐕</span>
+                                    <span class="role-text">Paseador</span>
+                                </div>
+                            </label>
+                            <label class="role-card">
+                                <input type="radio" name="rol" value="peluquero">
+                                <div class="role-content">
+                                    <span class="role-icon">✂️</span>
+                                    <span class="role-text">Peluquero</span>
+                                </div>
+                            </label>
+                            <label class="role-card">
+                                <input type="radio" name="rol" value="adiestrador">
+                                <div class="role-content">
+                                    <span class="role-icon">🎯</span>
+                                    <span class="role-text">Adiestrador</span>
+                                </div>
+                            </label>
+                            <label class="role-card">
+                                <input type="radio" name="rol" value="cuidador">
+                                <div class="role-content">
+                                    <span class="role-icon">🏠</span>
+                                    <span class="role-text">Cuidador</span>
                                 </div>
                             </label>
                         </div>

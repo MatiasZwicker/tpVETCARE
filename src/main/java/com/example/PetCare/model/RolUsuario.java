@@ -1,7 +1,11 @@
 package com.example.PetCare.model;
 
 public enum RolUsuario {
-    USUARIO,
+    ADMINISTRADOR,
     DUENO,
-    VETERINARIA
+    VETERINARIO,
+    PASEADOR,
+    PELUQUERO,
+    ADIESTRADOR,
+    CUIDADOR
 }
