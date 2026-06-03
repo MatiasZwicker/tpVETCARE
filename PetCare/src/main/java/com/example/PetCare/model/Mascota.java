@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "mascota")
@@ -24,10 +24,11 @@ public class Mascota {
     private String raza;
     private String sexo;
     private double peso;
-    private Date fecha_nacimiento;
+    private LocalDate fecha_nacimiento;
     private String observaciones;
     private boolean activo;
 
+    @ManyToOne
     @JoinColumn(name = "id_dueño")
     private Usuario usuario;
 }

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -16,7 +16,7 @@ public class MascotaDTO {
     private String raza;
     private String sexo;
     private double peso;
-    private Date fecha_nacimiento;
+    private LocalDate fecha_nacimiento;
     private String observaciones;
     private boolean activo;
     private int idUsuario;

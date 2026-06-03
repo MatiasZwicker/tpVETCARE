@@ -7,7 +7,7 @@ import com.example.PetCare.repository.MascotaRepository;
 import com.example.PetCare.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,7 +82,7 @@ public class MascotaService {
         dto.setActivo(entity.isActivo());
         dto.setObservaciones(entity.getObservaciones());
         dto.setSexo(entity.getSexo());
-        dto.setFecha_nacimiento((Date) entity.getFecha_nacimiento());
+        dto.setFecha_nacimiento(entity.getFecha_nacimiento());
         dto.setPeso(entity.getPeso());
         dto.setIdUsuario(entity.getUsuario().getIdUsuario());
         return dto;
