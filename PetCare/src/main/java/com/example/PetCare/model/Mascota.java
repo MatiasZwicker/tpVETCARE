@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "mascota")
 @Data
@@ -16,28 +18,16 @@ public class Mascota {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_mascota")
     private int idMascota;
-
-    @Column(name = "nombre")
     private String nombre;
-
-    @Column(name = "especie")
     private String especie;
-
-    @Column(name = "raza")
     private String raza;
-
-    @Column(name = "edad")
-    private int edad;
-
-    @Column(name = "peso")
+    private String sexo;
     private double peso;
+    private Date fecha_nacimiento;
+    private String observaciones;
+    private boolean activo;
 
-    @Column(name = "activo")
-    private boolean activo = true;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario")
+    @JoinColumn(name = "id_dueño")
     private Usuario usuario;
 }

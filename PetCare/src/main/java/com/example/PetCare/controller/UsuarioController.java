@@ -24,37 +24,28 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> buscarPorId(@PathVariable Integer id) {
-        return usuarioService.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public UsuarioDTO buscarPorId(@PathVariable Integer id) {
+        return usuarioService.buscarPorId(id).get();
     }
 
     @PostMapping
-    public ResponseEntity<String> crear(@RequestBody UsuarioDTO dto) {
+    public UsuarioDTO crear(@RequestBody UsuarioDTO dto) {
         boolean creado = usuarioService.crear(dto);
         if (creado) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado correctamente");
+            return dto;
+        } else {
+            return null;
         }
-        return ResponseEntity.badRequest().body("No se pudo crear el usuario");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id,
-                                             @RequestBody UsuarioDTO dto) {
+    public UsuarioDTO actualizar(@PathVariable Integer id,@RequestBody UsuarioDTO dto) {
         boolean actualizado = usuarioService.actualizar(id, dto);
-        if (actualizado) {
-            return ResponseEntity.ok("Usuario actualizado correctamente");
-        }
-        return ResponseEntity.notFound().build();
+        return dto;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarLogico(@PathVariable Integer id) {
-        boolean eliminado = usuarioService.eliminarLogico(id);
-        if (eliminado) {
-            return ResponseEntity.ok("Usuario eliminado correctamente");
-        }
-        return ResponseEntity.notFound().build();
+    public void eliminar(@PathVariable Integer id) {
+        boolean eliminado = usuarioService.eliminar(id);
     }
 }

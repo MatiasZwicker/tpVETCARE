@@ -7,6 +7,7 @@ import com.example.PetCare.repository.MascotaRepository;
 import com.example.PetCare.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,7 +53,10 @@ public class MascotaService {
                     entity.setNombre(dto.getNombre());
                     entity.setEspecie(dto.getEspecie());
                     entity.setRaza(dto.getRaza());
-                    entity.setEdad(dto.getEdad());
+                    entity.setActivo(dto.isActivo());
+                    entity.setObservaciones(dto.getObservaciones());
+                    entity.setSexo(dto.getSexo());
+                    entity.setFecha_nacimiento(dto.getFecha_nacimiento());
                     entity.setPeso(dto.getPeso());
                     entity.setUsuario(usuario);
                     mascotaRepository.save(entity);
@@ -75,7 +79,10 @@ public class MascotaService {
         dto.setNombre(entity.getNombre());
         dto.setEspecie(entity.getEspecie());
         dto.setRaza(entity.getRaza());
-        dto.setEdad(entity.getEdad());
+        dto.setActivo(entity.isActivo());
+        dto.setObservaciones(entity.getObservaciones());
+        dto.setSexo(entity.getSexo());
+        dto.setFecha_nacimiento((Date) entity.getFecha_nacimiento());
         dto.setPeso(entity.getPeso());
         dto.setIdUsuario(entity.getUsuario().getIdUsuario());
         return dto;
@@ -86,7 +93,10 @@ public class MascotaService {
         entity.setNombre(dto.getNombre());
         entity.setEspecie(dto.getEspecie());
         entity.setRaza(dto.getRaza());
-        entity.setEdad(dto.getEdad());
+        entity.setFecha_nacimiento(dto.getFecha_nacimiento());
+        entity.setSexo(dto.getSexo());
+        entity.setObservaciones(dto.getObservaciones());
+        entity.setActivo(dto.isActivo());
         entity.setPeso(dto.getPeso());
         entity.setUsuario(usuario);
         return entity;

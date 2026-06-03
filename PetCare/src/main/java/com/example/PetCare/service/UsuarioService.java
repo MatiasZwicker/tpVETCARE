@@ -48,7 +48,7 @@ public class UsuarioService {
                 .orElse(false);
     }
 
-    public boolean eliminarLogico(Integer idUsuario) {
+    public boolean eliminar(Integer idUsuario) {
         if (usuarioRepository.existsById(idUsuario)) {
             usuarioRepository.deleteById(idUsuario);
             return true;
@@ -56,6 +56,7 @@ public class UsuarioService {
         return false;
     }
 
+    /// pasa de entidad a DTO
     private UsuarioDTO toDTO(Usuario entity) {
         UsuarioDTO dto = new UsuarioDTO();
         dto.setIdUsuario(entity.getIdUsuario());
@@ -64,9 +65,12 @@ public class UsuarioService {
         dto.setTelefono(entity.getTelefono());
         dto.setEmail(entity.getEmail());
         dto.setDireccion(entity.getDireccion());
+        dto.setRol(entity.getRol());
+        dto.setActivo(entity.isActivo());
         return dto;
     }
 
+    ///  pasa de DTO a entidad
     private Usuario toEntity(UsuarioDTO dto) {
         Usuario entity = new Usuario();
         entity.setNombre(dto.getNombre());
@@ -74,6 +78,8 @@ public class UsuarioService {
         entity.setTelefono(dto.getTelefono());
         entity.setEmail(dto.getEmail());
         entity.setDireccion(dto.getDireccion());
+        entity.setRol(dto.getRol());
+        entity.setActivo(dto.isActivo());
         return entity;
     }
 }
