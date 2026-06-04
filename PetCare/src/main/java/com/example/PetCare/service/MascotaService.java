@@ -40,7 +40,7 @@ public class MascotaService {
         return mascotaRepository.findByRazaAndActivoTrue(raza);
     }
     public List<Mascota> buscarPorNombre(String nombre) {
-        return mascotaRepository.findByRazaAndActivoTrue(nombre);
+        return mascotaRepository.findByNombreAndActivoTrue(nombre);
     }
 
 
@@ -83,7 +83,7 @@ public class MascotaService {
         }
         return false;
     }
-
+ /// pasa de dto a entidad
     private MascotaDTO toDTO(Mascota entity) {
         MascotaDTO dto = new MascotaDTO();
         dto.setIdMascota(entity.getIdMascota());
@@ -98,7 +98,7 @@ public class MascotaService {
         dto.setIdUsuario(entity.getUsuario().getIdUsuario());
         return dto;
     }
-
+    /// pasa de entidad a dto
     private Mascota toEntity(MascotaDTO dto, Usuario usuario) {
         Mascota entity = new Mascota();
         entity.setNombre(dto.getNombre());

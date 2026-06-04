@@ -38,7 +38,7 @@ public class MascotaController {
     }
     @GetMapping("/nombre/{nombre}")
     public List<Mascota> buscarPorNombre(@PathVariable String nombre) {
-        return mascotaService.buscarPorRaza(nombre);
+        return mascotaService.buscarPorNombre(nombre);
     }
 
     @PostMapping
