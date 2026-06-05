@@ -88,7 +88,7 @@ public class PostulacionController {
     @GetMapping("/admin/postulaciones")
     public String listarPostulaciones(HttpSession session, Model model) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.ADMINISTRADOR) {
+        if (usuario == null || (usuario.getRol() != RolUsuario.ADMINISTRADOR && usuario.getRol() != RolUsuario.DUENO)) {
             return "redirect:/";
         }
 
@@ -111,8 +111,8 @@ public class PostulacionController {
             HttpSession session,
             RedirectAttributes redirectAttributes
     ) {
-        Usuario admin = (Usuario) session.getAttribute("usuario");
-        if (admin == null || admin.getRol() != RolUsuario.ADMINISTRADOR) {
+        Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
+        if (usuarioSesion == null || (usuarioSesion.getRol() != RolUsuario.ADMINISTRADOR && usuarioSesion.getRol() != RolUsuario.DUENO)) {
             return "redirect:/";
         }
 
@@ -152,8 +152,8 @@ public class PostulacionController {
             HttpSession session,
             RedirectAttributes redirectAttributes
     ) {
-        Usuario admin = (Usuario) session.getAttribute("usuario");
-        if (admin == null || admin.getRol() != RolUsuario.ADMINISTRADOR) {
+        Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
+        if (usuarioSesion == null || (usuarioSesion.getRol() != RolUsuario.ADMINISTRADOR && usuarioSesion.getRol() != RolUsuario.DUENO)) {
             return "redirect:/";
         }
 

@@ -28,7 +28,8 @@ public class AuthController {
     }
 
     // Función para registrar un usuario común desde el formulario público.
-    // Recibe nombre, apellido, email, contraseña y rol (siempre "usuario" desde el frontend).
+    // Recibe nombre, apellido, email, contraseña, confirmación y rol (siempre "usuario" desde el frontend).
+    // Valida que la contraseña y su confirmación coincidan antes de delegar en AuthService.
     // Delega en AuthService.registrar() que solo permite crear usuarios con rol USUARIO.
     // Si hay error, redirige a /#auth y muestra el mensaje en la sección de registro.
     // - Matias Z.
@@ -38,9 +39,15 @@ public class AuthController {
             @RequestParam String apellido,
             @RequestParam String email,
             @RequestParam String password,
+            @RequestParam String confirmPassword,
             @RequestParam String rol,
             RedirectAttributes redirectAttributes
     ) {
+        if (!password.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("errorRegistro", "Las contraseñas no coinciden");
+            return "redirect:/#auth";
+        }
+
         try {
             RolUsuario rolEnum = mapRol(rol);
             authService.registrar(nombre, apellido, email, password, rolEnum);
@@ -274,4 +281,46 @@ public class AuthController {
             default -> throw new IllegalArgumentException("Rol inválido");
         };
     }
+
+    //- Recibe nombre, apellido, email, password
+    //- Verifica en sesión que el usuario logueado sea DUENO (si no, redirige)
+    //- Llama a authService.crearAdministrador(...)
+    //    - Si hay error, lo pasa como atributo flash
+    // - Redirige de vuelta al dashboard del dueño
+    @PostMapping ("/dashboard/dueno/crear-admin")
+    public String dashboardDuenoCrearAdmin(HttpSession session, String nombre, String apellido, String email, String password, RedirectAttributes redirectAttributes) {
+        Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
+        if (usuarioSesion == null || usuarioSesion.getRol() != RolUsuario.DUENO) {
+            return "redirect:/";
+        }
+
+        try {
+            authService.crearAdministrador(nombre, apellido, email, password);
+            redirectAttributes.addFlashAttribute("msg", "Administrador creado exitosamente");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("msg", e.getMessage());
+        }
+        return "redirect:/dashboard/dueno";
+    }
+
+// - Recibe nombre, apellido, email, password
+// - Verifica en sesión que el usuario logueado sea ADMINISTRADOR
+// - Llama a authService.crearDueno(...)
+//         - Redirige al dashboard del admin
+// Matias Z. 
+    @PostMapping ("/dashboard/administrador/crear-dueno")
+    public String dashboardAdminCrearDueno (HttpSession session, String nombre, String apellido, String email, String password, RedirectAttributes redirectAttributes) {
+        Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
+        if (usuarioSesion == null || usuarioSesion.getRol() != RolUsuario.ADMINISTRADOR) {
+            return "redirect:/";
+        }
+        try{
+            authService.crearDueno(nombre, apellido, email, password);
+            redirectAttributes.addFlashAttribute("msg", "Dueño creado exitosamente");
+        }catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("msg", e.getMessage());
+        }
+        return "redirect:/dashboard/administrador";
+    }
+
 }

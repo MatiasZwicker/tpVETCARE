@@ -73,6 +73,12 @@
         <p>Bienvenido al panel de administración del sistema.</p>
         <div class="card-grid">
             <div class="dash-card">
+                <span class="dash-icon">📋</span>
+                <h3>Postulaciones</h3>
+                <p>Revisá y gestioná las solicitudes de profesionales</p>
+                <a href="/admin/postulaciones" class="dash-link">Ir</a>
+            </div>
+            <div class="dash-card">
                 <span class="dash-icon">👥</span>
                 <h3>Usuarios</h3>
                 <p>Gestiona todos los usuarios del sistema</p>
@@ -90,7 +96,20 @@
                 <p>Ajustes y preferencias del sistema</p>
                 <a href="#" class="dash-link">Ir</a>
             </div>
+            <div class="dash-card">
+                <span class="dash-icon">🤝</span>
+                <h3>Agregar Socio / Co-dueño</h3>
+                <p>Crea un nuevo usuario con rol de dueño.</p>
+                <form action="/dashboard/administrador/crear-dueno" method="post" style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">
+                    <input type="text" name="nombre" placeholder="Nombre" required style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;">
+                    <input type="text" name="apellido" placeholder="Apellido" required style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;">
+                    <input type="email" name="email" placeholder="Email" required style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;">
+                    <input type="password" name="password" placeholder="Contraseña" required style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;">
+                    <button type="submit" class="dash-link" style="border:none;cursor:pointer;text-align:center;">Agregar Socio</button>
+                </form>
+            </div>
         </div>
+        <div th:if="${msg}" th:text="${msg}" style="margin-top:16px;padding:12px 20px;background:#e8f5e9;border-radius:10px;color:#2e7d32;font-weight:500;"></div>
     </main>
 </body>
 </html>

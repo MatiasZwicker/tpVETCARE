@@ -95,4 +95,44 @@ public class AuthService {
         usuario.setDebeCambiarPassword(false);
         usuarioRepository.save(usuario);
     }
+
+
+    // Crea un usuario con rol ADMINISTRADOR.
+    // Verifica que el email no esté duplicado y lanza excepción si ya existe,
+    // para que el controller pueda mostrar el mensaje de error al usuario.
+    // - Matias Z.
+    public Usuario crearAdministrador(String nombre, String apellido, String email, String password){
+        if (usuarioRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("El email ya está registrado en el sistema");
+        }
+
+        Usuario usuario = new Usuario();
+        usuario.setNombre(nombre);
+        usuario.setApellido(apellido);
+        usuario.setEmail(email);
+        usuario.setPassword(passwordEncoder.encode(password));
+        usuario.setRol(RolUsuario.ADMINISTRADOR);
+        usuario.setActivo(true);
+        usuario.setDebeCambiarPassword(false);
+        return usuarioRepository.save(usuario);
+    }
+    // Misma lógica pero con rol DUENO
+    // - Matias Z.
+    public Usuario crearDueno(String nombre, String apellido, String email, String password){
+        if  (usuarioRepository.existsByEmail(email)) {
+            System.out.printf("Usuario existente en el sistema %s\n", email);
+            return null;
+        }
+        Usuario usuario = new Usuario();
+        usuario.setNombre(nombre);
+        usuario.setApellido(apellido);
+        usuario.setEmail(email);
+        usuario.setPassword(passwordEncoder.encode(password));
+        usuario.setRol(RolUsuario.DUENO);
+        usuario.setActivo(true);
+        usuario.setDebeCambiarPassword(false);
+        usuarioRepository.save(usuario);
+        return usuario;
+    }
+
 }

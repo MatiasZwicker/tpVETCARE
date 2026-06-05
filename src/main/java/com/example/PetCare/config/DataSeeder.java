@@ -4,12 +4,12 @@ import com.example.PetCare.model.RolUsuario;
 import com.example.PetCare.model.Usuario;
 import com.example.PetCare.repository.UsuarioRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Configuration
+@Component
 public class DataSeeder implements CommandLineRunner {
 
     private final UsuarioRepository usuarioRepository;
