@@ -77,6 +77,12 @@ public class MascotaService {
                 .orElse(false);
     }
 
+    public MascotaDTO actualizarObservacion(Integer id ,String observacion){
+        MascotaDTO mascota=mascotaRepository.findById(id).map(a->toDTO(a)).orElse(null);
+        mascota.setObservaciones(observacion);
+        return mascota;
+    }
+
     public boolean eliminar(Integer idMascota) {
         if (mascotaRepository.existsById(idMascota)) {
             mascotaRepository.deleteById(idMascota);

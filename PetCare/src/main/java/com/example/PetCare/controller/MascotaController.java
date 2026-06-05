@@ -47,7 +47,6 @@ public class MascotaController {
         if (creado) {
             return dto;
         }else return null;
-
     }
 
     @PutMapping("/{id}")
@@ -55,6 +54,10 @@ public class MascotaController {
         boolean actualizado = mascotaService.actualizar(id, dto);
         if (actualizado){return dto;}
         return null;
+    }
+    @PutMapping("/{id}/observaciones")
+    public MascotaDTO actualizaObservaciones(@PathVariable Integer id,@RequestBody String obs){
+        return mascotaService.actualizarObservacion(id,obs);
     }
 
     @DeleteMapping("/{id}")
