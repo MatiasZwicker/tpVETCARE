@@ -1,9 +1,11 @@
 package com.example.PetCare.enums;
 
 public enum Rol {
-    Veterinario,
-    Paseador,
-    Peluquero,
-    Adiestrador,
-    Cuidador
+    VETERINARIO,
+    PASEADOR,
+    PELUQUERO,
+    ADIESTRADOR,
+    CUIDADOR,
+    ADMIN,
+    DUENIO
 }

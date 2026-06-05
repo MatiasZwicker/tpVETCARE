@@ -11,16 +11,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Profesional {
+public class Profesional extends Usuario{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String matricula;
-    private Rol rol;
     private String experiencia;
-    private Estado_Turno estado;
-    @ManyToOne
-    @JoinColumn(name = "id_usuario ")
-    private Usuario usuario;
-
 }

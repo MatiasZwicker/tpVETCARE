@@ -4,6 +4,7 @@ import com.example.PetCare.dto.MascotaDTO;
 import com.example.PetCare.model.Mascota;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,5 +15,9 @@ public interface MascotaRepository extends JpaRepository<Mascota, Integer> {
     List<Mascota> findByRazaAndActivoTrue(String especie);
     List<Mascota> findByNombreAndActivoTrue(String especie);
 
+    @Query("SELECT DISTINCT t.mascota FROM Turno t WHERE t.profesional.id = :idProfesional")
+    List<Mascota> findMascotasAtendidasPorProfesional(@Param("idProfesional") int idProfesional);
 
 }
+
+

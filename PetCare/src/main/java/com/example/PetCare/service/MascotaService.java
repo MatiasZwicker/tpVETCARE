@@ -37,11 +37,21 @@ public class MascotaService {
     public List<Mascota> buscarPorEspecie(String especie) {
         return mascotaRepository.findByEspecieAndActivoTrue(especie);
     }
+
     public List<Mascota> buscarPorRaza(String raza) {
         return mascotaRepository.findByRazaAndActivoTrue(raza);
     }
+
     public List<Mascota> buscarPorNombre(String nombre) {
         return mascotaRepository.findByNombreAndActivoTrue(nombre);
+    }
+
+    public List<Mascota> buscaMascotasAtendidasPorProfesional(int id) {
+        return mascotaRepository.findMascotasAtendidasPorProfesional(id);
+    }
+
+    public List<Mascota> masotaAtendidaXnombre(int id, String nombre) {
+        return mascotaRepository.findMascotasAtendidasPorProfesional(id).stream().filter(a -> a.getNombre().equals(nombre)).toList();
     }
 
     /// ABM
@@ -77,8 +87,8 @@ public class MascotaService {
                 .orElse(false);
     }
 
-    public MascotaDTO actualizarObservacion(Integer id ,String observacion){
-        MascotaDTO mascota=mascotaRepository.findById(id).map(a->toDTO(a)).orElse(null);
+    public MascotaDTO actualizarObservacion(Integer id, String observacion) {
+        MascotaDTO mascota = mascotaRepository.findById(id).map(a -> toDTO(a)).orElse(null);
         mascota.setObservaciones(observacion);
         return mascota;
     }
@@ -90,7 +100,8 @@ public class MascotaService {
         }
         return false;
     }
- /// pasa de dto a entidad
+
+    /// pasa de dto a entidad
     public MascotaDTO toDTO(Mascota entity) {
         MascotaDTO dto = new MascotaDTO();
         dto.setIdMascota(entity.getIdMascota());
@@ -105,6 +116,7 @@ public class MascotaService {
         dto.setIdUsuario(entity.getUsuario().getIdUsuario());
         return dto;
     }
+
     /// pasa de entidad a dto
     public Mascota toEntity(MascotaDTO dto, Usuario usuario) {
         Mascota entity = new Mascota();
