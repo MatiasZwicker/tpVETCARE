@@ -33,4 +33,9 @@ public class ProfesionalController {
     public ResponseEntity<List<Profesional>> listarTodos(){
         return ResponseEntity.ok(profesionalService.listarTodos());
     }
+
+    @PutMapping("/actualizar/{id}")
+    public ResponseEntity<Profesional> actualizar(@RequestBody Profesional profesional, @PathVariable int id){
+        return ResponseEntity.ok(profesionalService.actualizar(id, profesional));
+    }
 }
