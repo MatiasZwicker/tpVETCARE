@@ -68,7 +68,7 @@ public class ProfesionalService {
 
     public ProfesionalDTO toDTO(Profesional p){
         ProfesionalDTO dto = new ProfesionalDTO();
-        dto.setId(p.getId());
+        dto.setId(p.getIdUsuario());
         dto.setNombre(p.getNombre());
         dto.setApellido(p.getApellido());
         dto.setEmail(p.getEmail());
