@@ -56,4 +56,20 @@ public class ProductoService {
         productoRepository.deleteById(id);
     }
 
+    public Producto sumaStock(Integer id,int stock){
+        Producto producto= productoRepository.findById(id).orElseThrow(()->new NoEncontradoException("No existe el producto"));
+        producto.setStock(producto.getStock()+stock);
+        return productoRepository.save(producto);
+    }
+
+    public Producto restaStock(Integer id,int stock){
+        Producto producto= productoRepository.findById(id).orElseThrow(()->new NoEncontradoException("No existe el producto"));
+        producto.setStock(producto.getStock()-stock);
+        return productoRepository.save(producto);
+    }
+
+    public List<Producto> findByStockBefore() {
+        return productoRepository.findByStockBefore(10);
+    }
+
 }

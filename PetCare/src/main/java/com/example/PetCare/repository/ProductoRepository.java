@@ -14,5 +14,5 @@ public interface ProductoRepository extends JpaRepository<Producto,Integer> {
     List<Producto> findByPrecioBefore(double precioBefore);
     List<Producto> findByPrecioAfter(double precioAfter);
     List<Producto> findByActivo(boolean activo);
-
+    List<Producto> findByStockBefore(int stockBefore);
 }
