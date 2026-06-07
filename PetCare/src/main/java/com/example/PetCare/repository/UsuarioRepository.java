@@ -2,6 +2,7 @@ package com.example.PetCare.repository;
 
 import com.example.PetCare.enums.Rol;
 import com.example.PetCare.model.Usuario;
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

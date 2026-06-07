@@ -29,6 +29,42 @@ public class UsuarioController {
         return usuarioService.buscarPorId(id).get();
     }
 
+    @GetMapping("/buscar/email/{email}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Usuario> buscarPorEmail(@PathVariable String email) {
+        return usuarioService.findByEmail(email);
+    }
+
+    @GetMapping("/buscar/nombre/{nombre}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Usuario> findByNombre(@PathVariable String nombre) {
+        return usuarioService.findByNombre(nombre);
+    }
+
+    @GetMapping("/buscar/email/{email}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Usuario> findByEmail(@PathVariable String email) {
+        return usuarioService.findByEmail(email);
+    }
+
+    @GetMapping("/buscar/telefono/{telefono}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Usuario> findByTelefono(@PathVariable String telefono) {
+        return usuarioService.findByTelefono(telefono);
+    }
+
+    @GetMapping("/buscar/direccion/{direccion}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Usuario> findByDireccion(@PathVariable String direccion) {
+        return usuarioService.findByDireccion(direccion);
+    }
+
+    @GetMapping("/buscar/activo/{activo}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Usuario> findByActivo(@PathVariable boolean activo) {
+        return usuarioService.findByActivo(activo);
+    }
+
     @PostMapping("/crear")
     public Usuario crear(@RequestBody Usuario dto) {
         return usuarioService.crear(dto);
