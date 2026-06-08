@@ -20,7 +20,8 @@ public class ProductoService {
     }
 
     public Producto listarPorid(Integer id) {
-        return productoRepository.findById(id).orElseThrow(() -> new NoEncontradoException("No existe el producto"));
+        return productoRepository.findById(id)
+                .orElseThrow(() -> new NoEncontradoException("No existe el producto"));
     }
 
     public List<Producto> listaXcategoria(String categoria) {
@@ -49,6 +50,9 @@ public class ProductoService {
     }
 
     public Producto actualizar(Producto producto) {
+        if(!productoRepository.existsById(producto.getId())){
+            throw new NoEncontradoException("No existe el producto");
+        }
         return productoRepository.save(producto);
     }
 
@@ -57,13 +61,18 @@ public class ProductoService {
     }
 
     public Producto sumaStock(Integer id,int stock){
-        Producto producto= productoRepository.findById(id).orElseThrow(()->new NoEncontradoException("No existe el producto"));
+        Producto producto= productoRepository.findById(id)
+                .orElseThrow(()->new NoEncontradoException("No existe el producto"));
         producto.setStock(producto.getStock()+stock);
         return productoRepository.save(producto);
     }
 
     public Producto restaStock(Integer id,int stock){
-        Producto producto= productoRepository.findById(id).orElseThrow(()->new NoEncontradoException("No existe el producto"));
+        Producto producto= productoRepository.findById(id)
+                .orElseThrow(()->new NoEncontradoException("No existe el producto"));
+        if(producto.getStock()<stock){
+            throw new IllegalArgumentException("No hay suficiente stock disponible");
+        }
         producto.setStock(producto.getStock()-stock);
         return productoRepository.save(producto);
     }

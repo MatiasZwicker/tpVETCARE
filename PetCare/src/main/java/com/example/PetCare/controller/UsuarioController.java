@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -31,7 +32,7 @@ public class UsuarioController {
 
     @GetMapping("/buscar/email/{email}")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Usuario> buscarPorEmail(@PathVariable String email) {
+    public Optional<Usuario> buscarPorEmail(@PathVariable String email) {
         return usuarioService.findByEmail(email);
     }
 
@@ -43,7 +44,7 @@ public class UsuarioController {
 
     @GetMapping("/buscar/email/{email}")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Usuario> findByEmail(@PathVariable String email) {
+    public Optional<Usuario> findByEmail(@PathVariable String email) {
         return usuarioService.findByEmail(email);
     }
 

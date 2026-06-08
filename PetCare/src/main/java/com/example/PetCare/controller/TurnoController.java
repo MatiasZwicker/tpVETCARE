@@ -54,10 +54,8 @@ public class TurnoController {
     }
 
     @PostMapping
-    public TurnoDTO crear(@RequestBody TurnoDTO dto) {
-        boolean creado = turnoService.crear(dto);
-        if (creado) return dto;
-        return null;
+    public Turno crear(@RequestBody TurnoDTO dto) {
+        return turnoService.crear(dto);
     }
 
     @PutMapping("/{id}")
@@ -71,12 +69,12 @@ public class TurnoController {
     }
 
     @PutMapping("/{id}/cancelar")
-    public int cancelarTurno(@PathVariable Integer id) {
+    public boolean cancelarTurno(@PathVariable Integer id) {
         return turnoService.cancelaTurno(id);
     }
 
     @PutMapping("/{id}/confirmar")
-    public int confirmarTurno(@PathVariable Integer id) {
+    public boolean confirmarTurno(@PathVariable Integer id) {
         return turnoService.confirmarTurno(id);
     }
 }

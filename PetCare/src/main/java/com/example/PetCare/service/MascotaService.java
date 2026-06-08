@@ -1,6 +1,7 @@
 package com.example.PetCare.service;
 
 import com.example.PetCare.dto.MascotaDTO;
+import com.example.PetCare.exceptions.NoEncontradoException;
 import com.example.PetCare.model.Mascota;
 import com.example.PetCare.model.Usuario;
 import com.example.PetCare.repository.MascotaRepository;
@@ -34,24 +35,35 @@ public class MascotaService {
                 .map(this::toDTO);
     }
 
-    public List<Mascota> buscarPorEspecie(String especie) {
-        return mascotaRepository.findByEspecieAndActivoTrue(especie);
+    public List<MascotaDTO> buscarPorEspecie(String especie) {
+        return mascotaRepository.findByEspecieAndActivoTrue(especie).stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-    public List<Mascota> buscarPorRaza(String raza) {
-        return mascotaRepository.findByRazaAndActivoTrue(raza);
+    public List<MascotaDTO> buscarPorRaza(String raza) {
+        return mascotaRepository.findByRazaAndActivoTrue(raza).stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-    public List<Mascota> buscarPorNombre(String nombre) {
-        return mascotaRepository.findByNombreAndActivoTrue(nombre);
+    public List<MascotaDTO> buscarPorNombre(String nombre) {
+        return mascotaRepository.findByNombreAndActivoTrue(nombre).stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-    public List<Mascota> buscaMascotasAtendidasPorProfesional(int id) {
-        return mascotaRepository.findMascotasAtendidasPorProfesional(id);
+    public List<MascotaDTO> buscaMascotasAtendidasPorProfesional(int id) {
+        return mascotaRepository.findMascotasAtendidasPorProfesional(id).stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-    public List<Mascota> masotaAtendidaXnombre(int id, String nombre) {
-        return mascotaRepository.findMascotasAtendidasPorProfesional(id).stream().filter(a -> a.getNombre().equals(nombre)).toList();
+    public List<MascotaDTO> masotaAtendidaXnombre(int id, String nombre) {
+        return mascotaRepository.findMascotasAtendidasPorProfesional(id).stream()
+                .map(this::toDTO)
+                .filter(a -> a.getNombre().equals(nombre))
+                .toList();
     }
 
     /// ABM
@@ -88,9 +100,10 @@ public class MascotaService {
     }
 
     public MascotaDTO actualizarObservacion(Integer id, String observacion) {
-        MascotaDTO mascota = mascotaRepository.findById(id).map(a -> toDTO(a)).orElse(null);
+        Mascota mascota = mascotaRepository.findById(id)
+                .orElseThrow(() -> new NoEncontradoException("Mascota no encontrada"));
         mascota.setObservaciones(observacion);
-        return mascota;
+        return toDTO(mascotaRepository.save(mascota));
     }
 
     public boolean eliminar(Integer idMascota) {

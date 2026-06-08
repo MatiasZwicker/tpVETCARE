@@ -29,15 +29,15 @@ public class MascotaController {
         return mascotaService.buscarPorId(id).get();
     }
     @GetMapping("/especie/{especie}")
-    public List<Mascota> buscarPorEspecie(@PathVariable String especie) {
+    public List<MascotaDTO> buscarPorEspecie(@PathVariable String especie) {
         return mascotaService.buscarPorEspecie(especie);
     }
     @GetMapping("/raza/{raza}")
-    public List<Mascota> buscarPorRaza(@PathVariable String raza) {
+    public List<MascotaDTO> buscarPorRaza(@PathVariable String raza) {
         return mascotaService.buscarPorRaza(raza);
     }
     @GetMapping("/nombre/{nombre}")
-    public List<Mascota> buscarPorNombre(@PathVariable String nombre) {
+    public List<MascotaDTO> buscarPorNombre(@PathVariable String nombre) {
         return mascotaService.buscarPorNombre(nombre);
     }
 

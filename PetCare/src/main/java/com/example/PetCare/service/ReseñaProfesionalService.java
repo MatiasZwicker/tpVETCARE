@@ -50,30 +50,45 @@ public class ReseñaProfesionalService {
         if(profesional == null ||  usuario == null){
             return null;
         }
-        return reseñaProfesionalRepository.findById(id).map(a-> toEntity(dto,profesional,usuario)).orElse(null);
+        return reseñaProfesionalRepository.findById(id)
+                .map(a-> toEntity(dto,profesional,usuario))
+                .orElse(null);
     }
 
     /// Vista
-    public List<ReseñaProfesional> listarTodos(){
-        return reseñaProfesionalRepository.findAll();
+    public List<ReseñaProfesionalDTO> listarTodos(){
+        return reseñaProfesionalRepository.findAll()
+                .stream().map(a -> toDTO(a))
+                .toList();
     }
+
     public List<ReseñaProfesionalDTO> listarFechaBefore(LocalDate fecha){
-        return reseñaProfesionalRepository.findByFechaBefore(fecha).stream().map(a->toDTO(a)).toList();
+        return reseñaProfesionalRepository.findByFechaBefore(fecha)
+                .stream().map(a->toDTO(a))
+                .toList();
     }
 
     public List<ReseñaProfesionalDTO> listarFechaAfter(LocalDate fecha){
-        return reseñaProfesionalRepository.findByFechaAfter(fecha).stream().map(a->toDTO(a)).toList();
+        return reseñaProfesionalRepository.findByFechaAfter(fecha)
+                .stream().map(a->toDTO(a))
+                .toList();
     }
 
     public List<ReseñaProfesionalDTO> listarFechaMascota(LocalDate fecha){
-        return reseñaProfesionalRepository.findByFecha(fecha).stream().map(a->toDTO(a)).toList();
+        return reseñaProfesionalRepository.findByFecha(fecha)
+                .stream().map(a->toDTO(a))
+                .toList();
     }
 
     public List<ReseñaProfesionalDTO> listarPuntuacion(Integer puntuacion){
-        return reseñaProfesionalRepository.findByPuntuacion(puntuacion).stream().map(a->toDTO(a)).toList();
+        return reseñaProfesionalRepository.findByPuntuacion(puntuacion)
+                .stream().map(a->toDTO(a))
+                .toList();
     }
     public List<ReseñaProfesionalDTO> listarActivos(Boolean activo){
-        return reseñaProfesionalRepository.findByActivo(activo).stream().map(a->toDTO(a)).toList();
+        return reseñaProfesionalRepository.findByActivo(activo)
+                .stream().map(a->toDTO(a))
+                .toList();
     }
 
     /// aceptar o rechazar una reseña

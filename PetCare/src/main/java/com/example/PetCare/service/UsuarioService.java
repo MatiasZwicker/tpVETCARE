@@ -1,6 +1,7 @@
 package com.example.PetCare.service;
 
 import com.example.PetCare.enums.Rol;
+import com.example.PetCare.exceptions.NoEncontradoException;
 import com.example.PetCare.model.Usuario;
 import com.example.PetCare.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class UsuarioService {
         return usuarioRepository.findByNombre(nombre);
     }
 
-    public List<Usuario> findByEmail(String email) {
+    public Optional<Usuario> findByEmail(String email) {
         return usuarioRepository.findByEmail(email);
     }
 
@@ -54,16 +55,9 @@ public class UsuarioService {
     }
 
     public Usuario actualizar(Usuario entity) {
-        Usuario usu = usuarioRepository.findById(entity.getIdUsuario()).orElse(null);
-        usu.setNombre(entity.getNombre());
-        usu.setApellido(entity.getApellido());
-        usu.setEmail(entity.getEmail());
-        usu.setTelefono(entity.getTelefono());
-        usu.setDireccion(entity.getDireccion());
-        usu.setTelefono(entity.getTelefono());
-        usu.setActivo(true);
-        return usu;
-
+        Usuario usu = usuarioRepository.findById(entity.getIdUsuario())
+                .orElseThrow(() -> new NoEncontradoException("Usuario no encontrado"));
+        return usuarioRepository.save(entity);
     }
 
     public boolean eliminar(Integer idUsuario) {

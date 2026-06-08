@@ -23,6 +23,7 @@ public class Usuario {
     private String email;
     private String telefono;
     private String direccion;
+    @Column(updatable = false) //un usuario no puede cambiar su rol una vez creado
     private Rol rol;
     private boolean activo;
 }

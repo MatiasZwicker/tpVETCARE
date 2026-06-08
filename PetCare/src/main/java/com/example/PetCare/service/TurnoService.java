@@ -1,6 +1,7 @@
 package com.example.PetCare.service;
 
 import com.example.PetCare.dto.TurnoDTO;
+import com.example.PetCare.exceptions.NoEncontradoException;
 import com.example.PetCare.model.Mascota;
 import com.example.PetCare.model.Profesional;
 import com.example.PetCare.model.Turno;
@@ -52,18 +53,18 @@ public class TurnoService {
     }
 
     public List<TurnoDTO> listarFechaMascota(LocalDate fecha){
-        return turnoRepository.findByFecha(fecha).stream().map(a->toDTO(a)).toList();
+        return turnoRepository.findByFecha(fecha).stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-    public boolean crear(TurnoDTO dto) {
-        Mascota mascota = mascotaRepository.findById(dto.getId()).orElse(null);
-        Profesional profesional = profesionalRepository.findById(dto.getId()).orElse(null);
-        if (mascota == null || profesional == null) {
-            return false;
-        }
+    public Turno crear(TurnoDTO dto) {
+        Mascota mascota = mascotaRepository.findById(dto.getId_mascota())
+                .orElseThrow(() -> new NoEncontradoException("Mascota no encontrada"));
+        Profesional profesional = profesionalRepository.findById(dto.getId_profesional())
+                .orElseThrow(() -> new NoEncontradoException("Profesional no encontrado"));
         Turno entity = toEntity(dto, mascota,profesional);
-        turnoRepository.save(entity);
-        return true;
+        return turnoRepository.save(entity);
     }
 
     public boolean eliminar(Integer idturno) {
@@ -81,15 +82,17 @@ public class TurnoService {
         if (mascota == null || profesional == null) {
             return null;
         }
-        return turnoRepository.findById(idTurno).map(a-> toEntity(dto,mascota,profesional)).orElse(null);
+        return turnoRepository.findById(idTurno)
+                .map(a-> toEntity(dto,mascota,profesional))
+                .orElse(null);
     }
 
-    public int cancelaTurno(Integer idTurno) {
-        return turnoRepository.cancelarTurno(idTurno);
+    public boolean cancelaTurno(Integer idTurno) {
+        return turnoRepository.cancelarTurno(idTurno) > 0;
     }
 
-    public int confirmarTurno(Integer idTurno) {
-        return turnoRepository.confirmarTurno(idTurno);
+    public boolean confirmarTurno(Integer idTurno) {
+        return turnoRepository.confirmarTurno(idTurno) > 0;
     }
 
 
