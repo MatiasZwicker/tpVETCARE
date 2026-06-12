@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TurnoDTO {
-    private int id;
+    private Integer id;
 
     @NotNull
     @Future
@@ -28,5 +28,5 @@ public class TurnoDTO {
     @NotNull
     private Estado_Turno estadoTurno;
 
-    private boolean activo;
+    private Boolean activo;
 }

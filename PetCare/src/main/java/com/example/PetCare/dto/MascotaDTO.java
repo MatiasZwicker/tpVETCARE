@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MascotaDTO {
-    private int idMascota;
+    private Integer idMascota;
 
     @NotBlank
     private String nombre;
@@ -25,11 +25,11 @@ public class MascotaDTO {
     private String sexo;
 
     @Positive
-    private double peso;
+    private Double peso;
 
     private LocalDate fecha_nacimiento;
     private String observaciones;
-    private boolean activo;
+    private Boolean activo;
 
     @NotNull
     private Integer idUsuario;

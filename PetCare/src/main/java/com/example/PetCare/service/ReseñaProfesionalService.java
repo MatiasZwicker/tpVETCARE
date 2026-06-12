@@ -122,7 +122,7 @@ public class ReseñaProfesionalService {
         entity.setFecha(dto.getFecha());
         entity.setTexto(dto.getTexto());
         entity.setPuntuacion(dto.getPuntuacion());
-        entity.setActivo(dto.isActivo());
+        entity.setActivo(dto.getActivo());
         return entity;
     }
 

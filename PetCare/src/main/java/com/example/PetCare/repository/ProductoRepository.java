@@ -11,8 +11,8 @@ import java.util.List;
 public interface ProductoRepository extends JpaRepository<Producto,Integer> {
     List<Producto> findByCategoria(String categoria);
     List<Producto> findByNombre(String nombre);
-    List<Producto> findByPrecioBefore(double precioBefore);
-    List<Producto> findByPrecioAfter(double precioAfter);
-    List<Producto> findByActivo(boolean activo);
-    List<Producto> findByStockBefore(int stockBefore);
+    List<Producto> findByPrecioBefore(Double precioBefore);
+    List<Producto> findByPrecioAfter(Double precioAfter);
+    List<Producto> findByActivo(Boolean activo);
+    List<Producto> findByStockBefore(Integer stockBefore);
 }

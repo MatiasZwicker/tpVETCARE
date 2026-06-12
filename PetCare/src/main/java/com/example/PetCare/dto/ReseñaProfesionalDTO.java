@@ -24,13 +24,13 @@ public class ReseñaProfesionalDTO {
 
     @Min(1)
     @Max(5)
-    private int puntuacion;
+    private Integer puntuacion;
 
     @NotNull
     @PastOrPresent
     private LocalDate fecha;
 
-    private boolean activo;
+    private Boolean activo;
 
     @NotNull
     private Integer id_usuario;

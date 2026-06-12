@@ -72,7 +72,7 @@ public class ReseñaproductoService {
     private ReseñaProducto toEntity(ReseñaProductoDTO dto, Producto producto, Usuario usuario){
         ReseñaProducto entity=new ReseñaProducto();
         entity.setId(dto.getId());
-        entity.setActivo(dto.isActivo());
+        entity.setActivo(dto.getActivo());
         entity.setComentario(dto.getComentario());
         entity.setPuntuacion(dto.getPuntuacion());
         entity.setFecha(dto.getFecha());

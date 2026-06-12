@@ -32,15 +32,15 @@ public class ProductoService {
         return productoRepository.findByNombre(nombre);
     }
 
-    public List<Producto> findByPrecioBefore(double precioBefore) {
+    public List<Producto> findByPrecioBefore(Double precioBefore) {
         return productoRepository.findByPrecioBefore(precioBefore);
     }
 
-    public List<Producto> findByPrecioAfter(double precioAfter) {
+    public List<Producto> findByPrecioAfter(Double precioAfter) {
         return productoRepository.findByPrecioAfter(precioAfter);
     }
 
-    public List<Producto> findByActivo(boolean activo) {
+    public List<Producto> findByActivo(Boolean activo) {
         return productoRepository.findByActivo(activo);
     }
 
@@ -49,10 +49,17 @@ public class ProductoService {
         return productoRepository.save(producto);
     }
 
-    public Producto actualizar(Producto producto) {
-        if(!productoRepository.existsById(producto.getId())){
-            throw new NoEncontradoException("No existe el producto");
-        }
+    public Producto actualizar(Producto dto) {
+        Producto producto = productoRepository.findById(dto.getId())
+                .orElseThrow(() -> new NoEncontradoException("No existe el producto"));
+
+        if (dto.getNombre() != null) producto.setNombre(dto.getNombre());
+        if (dto.getDescripcion() != null) producto.setDescripcion(dto.getDescripcion());
+        if (dto.getPrecio() != null) producto.setPrecio(dto.getPrecio());
+        if (dto.getStock() != null) producto.setStock(dto.getStock());
+        if (dto.getCategoria() != null) producto.setCategoria(dto.getCategoria());
+        if (dto.getActivo() != null) producto.setActivo(dto.getActivo());
+
         return productoRepository.save(producto);
     }
 
@@ -60,20 +67,20 @@ public class ProductoService {
         productoRepository.deleteById(id);
     }
 
-    public Producto sumaStock(Integer id,int stock){
+    public Producto sumaStock(Integer id, int stock){
         Producto producto= productoRepository.findById(id)
                 .orElseThrow(()->new NoEncontradoException("No existe el producto"));
-        producto.setStock(producto.getStock()+stock);
+        producto.setStock(producto.getStock() != null ? producto.getStock() + stock : stock);
         return productoRepository.save(producto);
     }
 
-    public Producto restaStock(Integer id,int stock){
+    public Producto restaStock(Integer id, int stock){
         Producto producto= productoRepository.findById(id)
                 .orElseThrow(()->new NoEncontradoException("No existe el producto"));
-        if(producto.getStock()<stock){
+        if(producto.getStock() == null || producto.getStock() < stock){
             throw new IllegalArgumentException("No hay suficiente stock disponible");
         }
-        producto.setStock(producto.getStock()-stock);
+        producto.setStock(producto.getStock() - stock);
         return productoRepository.save(producto);
     }
 
@@ -85,10 +92,10 @@ public class ProductoService {
      * Valida que el producto esté activo y que tenga stock suficiente para la venta. Si alguna de las condiciones no se cumple, lanza una excepción de no encontrado.
      */
     public void validarProducto(Producto producto, int cantidadRequerida){
-        if(!producto.isActivo()) {
+        if(!Boolean.TRUE.equals(producto.getActivo())) {
             throw new NoEncontradoException("Producto no disponible");
         }
-        if(producto.getStock() < cantidadRequerida) {
+        if(producto.getStock() == null || producto.getStock() < cantidadRequerida) {
             throw new NoEncontradoException("Stock insuficiente");
         }
     }

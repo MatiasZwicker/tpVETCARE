@@ -38,17 +38,17 @@ public class ProductoController {
     }
 
     @GetMapping("/precio/antes/{precio}")
-    public List<Producto> listarPrecioAntesDe(@PathVariable double precio) {
+    public List<Producto> listarPrecioAntesDe(@PathVariable Double precio) {
         return productoService.findByPrecioBefore(precio);
     }
 
     @GetMapping("/precio/despues/{precio}")
-    public List<Producto> listarPrecioDespuesDe(@PathVariable double precio) {
+    public List<Producto> listarPrecioDespuesDe(@PathVariable Double precio) {
         return productoService.findByPrecioAfter(precio);
     }
 
     @GetMapping("/activos/{activo}")
-    public List<Producto> listarPorActivo(@PathVariable boolean activo) {
+    public List<Producto> listarPorActivo(@PathVariable Boolean activo) {
         return productoService.findByActivo(activo);
     }
 

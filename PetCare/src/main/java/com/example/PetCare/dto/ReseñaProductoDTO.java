@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReseñaProductoDTO {
-    private int id;
+    private Integer id;
 
     @NotBlank
     @Size(max = 500)
@@ -24,13 +24,13 @@ public class ReseñaProductoDTO {
 
     @Min(1)
     @Max(5)
-    private int puntuacion;
+    private Integer puntuacion;
 
     @NotNull
     @PastOrPresent
     private LocalDate fecha;
 
-    private boolean activo;
+    private Boolean activo;
 
     @NotNull
     private Integer id_usuario;
