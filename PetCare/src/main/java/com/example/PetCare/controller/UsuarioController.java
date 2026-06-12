@@ -43,12 +43,6 @@ public class UsuarioController {
         return usuarioService.findByNombre(nombre);
     }
 
-    @GetMapping("/buscar/email/{email}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public Optional<Usuario> findByEmail(@PathVariable String email) {
-        return usuarioService.findByEmail(email);
-    }
-
     @GetMapping("/buscar/telefono/{telefono}")
     @PreAuthorize("hasRole('ADMIN')")
     public List<Usuario> findByTelefono(@PathVariable String telefono) {
@@ -72,8 +66,8 @@ public class UsuarioController {
         return usuarioService.crear(dto);
     }
 
-    @PutMapping("/actualizar/{id}")
-    public Usuario actualizar(@PathVariable Integer id,@RequestBody @Valid Usuario dto) {
+    @PutMapping("/actualizar")
+    public Usuario actualizar( @RequestBody @Valid Usuario dto) {
         return usuarioService.actualizar(dto);
     }
 

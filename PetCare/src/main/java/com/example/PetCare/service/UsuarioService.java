@@ -57,7 +57,13 @@ public class UsuarioService {
     public Usuario actualizar(Usuario entity) {
         Usuario usu = usuarioRepository.findById(entity.getIdUsuario())
                 .orElseThrow(() -> new NoEncontradoException("Usuario no encontrado"));
-        return usuarioRepository.save(entity);
+        usu.setNombre(entity.getNombre());
+        usu.setApellido(entity.getApellido());
+        usu.setEmail(entity.getEmail());
+        usu.setTelefono(entity.getTelefono());
+        usu.setDireccion(entity.getDireccion());
+        usu.setActivo(entity.getActivo());
+        return usuarioRepository.save(usu);
     }
 
     public boolean eliminar(Integer idUsuario) {

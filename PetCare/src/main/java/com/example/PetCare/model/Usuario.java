@@ -19,7 +19,7 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
-    private int idUsuario;
+    private Integer idUsuario;
 
     @NotBlank
     private String nombre;
@@ -40,5 +40,5 @@ public class Usuario {
     @Column(updatable = false)
     private Rol rol;
 
-    private boolean activo;
+    private Boolean activo;
 }

@@ -28,7 +28,7 @@ public class CarritoService {
      * Busca el carrito activo (estado CARRITO) del usuario. Si no existe, lo crea y lo asocia al usuario.
      */
     public Carrito obtenerOCrearCarrito(int idUsuario) {
-        return carritoRepository.findByIdUsuarioAndEstado(idUsuario, Estado_Carrito.CARRITO)
+        return carritoRepository.findByUsuario_IdUsuarioAndEstado(idUsuario, Estado_Carrito.CARRITO)
                 .orElseGet(() -> {
                     Usuario usuario = usuarioRepository.findById(idUsuario)
                             .orElseThrow(() -> new NoEncontradoException("Usuario no encontrado"));
@@ -83,7 +83,7 @@ public class CarritoService {
         if(cantidad <= 0){
             return eliminarProducto(idUsuario, idProducto);
         }
-        Carrito carrito = carritoRepository.findByIdUsuarioAndEstado(idUsuario, Estado_Carrito.CARRITO)
+        Carrito carrito = carritoRepository.findByUsuario_IdUsuarioAndEstado(idUsuario, Estado_Carrito.CARRITO)
                 .orElseThrow(() -> new NoEncontradoException("Carrito no encontrado"));
         Producto producto = productoService.listarPorid(idProducto);
         productoService.validarProducto(producto, cantidad);

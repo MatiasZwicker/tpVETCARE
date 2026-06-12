@@ -20,7 +20,7 @@ public class ReseñaProfesionalController {
     }
 
     @GetMapping
-    public List<ReseñaProfesional> listarTodos() {
+    public List<ReseñaProfesionalDTO> listarTodos() {
         return reseñaProfesionalService.listarTodos();
     }
 

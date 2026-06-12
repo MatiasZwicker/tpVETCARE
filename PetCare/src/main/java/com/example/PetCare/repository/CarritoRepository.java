@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.Optional;
 @Repository
 public interface CarritoRepository extends JpaRepository<Carrito, Integer> {
-    Optional<Carrito> findByIdUsuarioAndEstado(int idUsuario, Estado_Carrito estadoCarrito);
+    Optional<Carrito> findByUsuario_IdUsuarioAndEstado(Integer idUsuario, Estado_Carrito estadoCarrito);
     List<Carrito> findByUsuarioIdUsuarioAndEstadoNot(Integer idUsuario, Estado_Carrito estado);
 }

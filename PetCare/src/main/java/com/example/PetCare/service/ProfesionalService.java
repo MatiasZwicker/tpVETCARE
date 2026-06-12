@@ -74,7 +74,7 @@ public class ProfesionalService {
         dto.setEmail(p.getEmail());
         dto.setTelefono(p.getTelefono());
         dto.setRol(p.getRol());
-        dto.setActivo(p.isActivo());
+        dto.setActivo(p.getActivo());
         dto.setMatricula(p.getMatricula());
         dto.setExperiencia(p.getExperiencia());
         return dto;
