@@ -1,5 +1,6 @@
 package com.example.PetCare.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,11 +24,14 @@ public class HistorialClinico {
     private String observaciones;
 
     @OneToOne(mappedBy = "historialClinico")
+    @JsonIgnore
     private Mascota mascota;
 
     @OneToMany(mappedBy = "historialClinico", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Vacuna> vacunas = new ArrayList<>();
 
     @OneToMany(mappedBy = "historialClinico", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Medicamento> medicamentos = new ArrayList<>();
 }
