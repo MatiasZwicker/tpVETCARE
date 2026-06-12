@@ -3,6 +3,7 @@ package com.example.PetCare.controller;
 import com.example.PetCare.dto.ReseñaProductoDTO;
 import com.example.PetCare.model.ReseñaProducto;
 import com.example.PetCare.service.ReseñaproductoService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,12 +24,12 @@ public class ReseñaProductoController {
     }
 
     @PostMapping
-    public boolean crear(@RequestBody ReseñaProductoDTO dto) {
+    public boolean crear(@RequestBody @Valid ReseñaProductoDTO dto) {
         return reseñaproductoService.alta(dto);
     }
 
     @PutMapping("/{id}")
-    public ReseñaProducto actualizar(@PathVariable Integer id, @RequestBody ReseñaProductoDTO dto) {
+    public ReseñaProducto actualizar(@PathVariable Integer id, @RequestBody @Valid ReseñaProductoDTO dto) {
         return reseñaproductoService.actualizar(id, dto);
     }
 

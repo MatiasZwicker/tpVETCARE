@@ -2,6 +2,7 @@ package com.example.PetCare.controller;
 
 import com.example.PetCare.model.Usuario;
 import com.example.PetCare.service.UsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,12 +68,12 @@ public class UsuarioController {
     }
 
     @PostMapping("/crear")
-    public Usuario crear(@RequestBody Usuario dto) {
+    public Usuario crear(@RequestBody @Valid Usuario dto) {
         return usuarioService.crear(dto);
     }
 
     @PutMapping("/actualizar/{id}")
-    public Usuario actualizar(@PathVariable Integer id,@RequestBody Usuario dto) {
+    public Usuario actualizar(@PathVariable Integer id,@RequestBody @Valid Usuario dto) {
         return usuarioService.actualizar(dto);
     }
 

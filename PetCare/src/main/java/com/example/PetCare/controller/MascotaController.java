@@ -3,6 +3,7 @@ package com.example.PetCare.controller;
 import com.example.PetCare.dto.MascotaDTO;
 import com.example.PetCare.model.Mascota;
 import com.example.PetCare.service.MascotaService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ public class MascotaController {
     public MascotaDTO buscarPorId(@PathVariable Integer id) {
         return mascotaService.buscarPorId(id).get();
     }
+
     @GetMapping("/especie/{especie}")
     public List<MascotaDTO> buscarPorEspecie(@PathVariable String especie) {
         return mascotaService.buscarPorEspecie(especie);
@@ -36,13 +38,14 @@ public class MascotaController {
     public List<MascotaDTO> buscarPorRaza(@PathVariable String raza) {
         return mascotaService.buscarPorRaza(raza);
     }
+
     @GetMapping("/nombre/{nombre}")
     public List<MascotaDTO> buscarPorNombre(@PathVariable String nombre) {
         return mascotaService.buscarPorNombre(nombre);
     }
 
     @PostMapping
-    public MascotaDTO crear(@RequestBody MascotaDTO dto) {
+    public MascotaDTO crear(@RequestBody @Valid MascotaDTO dto) {
         boolean creado = mascotaService.crear(dto);
         if (creado) {
             return dto;
@@ -50,7 +53,7 @@ public class MascotaController {
     }
 
     @PutMapping("/{id}")
-    public MascotaDTO actualizar(@PathVariable Integer id,@RequestBody MascotaDTO dto) {
+    public MascotaDTO actualizar(@PathVariable Integer id,@RequestBody @Valid MascotaDTO dto) {
         boolean actualizado = mascotaService.actualizar(id, dto);
         if (actualizado){return dto;}
         return null;

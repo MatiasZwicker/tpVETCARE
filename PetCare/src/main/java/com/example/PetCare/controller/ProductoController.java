@@ -2,6 +2,7 @@ package com.example.PetCare.controller;
 
 import com.example.PetCare.model.Producto;
 import com.example.PetCare.service.ProductoService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,12 +53,12 @@ public class ProductoController {
     }
 
     @PostMapping
-    public Producto crear(@RequestBody Producto producto) {
+    public Producto crear(@RequestBody @Valid Producto producto) {
         return productoService.crear(producto);
     }
 
     @PutMapping("/{id}")
-    public Producto actualizar(@PathVariable Integer id, @RequestBody Producto producto) {
+    public Producto actualizar(@PathVariable Integer id, @RequestBody @Valid Producto producto) {
         producto.setId(id);
         return productoService.actualizar(producto);
     }

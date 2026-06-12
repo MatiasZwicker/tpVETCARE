@@ -3,6 +3,7 @@ package com.example.PetCare.controller;
 import com.example.PetCare.dto.ReseñaProfesionalDTO;
 import com.example.PetCare.model.ReseñaProfesional;
 import com.example.PetCare.service.ReseñaProfesionalService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -49,12 +50,12 @@ public class ReseñaProfesionalController {
     }
 
     @PostMapping
-    public boolean crear(@RequestBody ReseñaProfesionalDTO dto) {
+    public boolean crear(@RequestBody @Valid ReseñaProfesionalDTO dto) {
         return reseñaProfesionalService.alta(dto);
     }
 
     @PutMapping("/{id}")
-    public ReseñaProfesional actualizar(@PathVariable Integer id, @RequestBody ReseñaProfesionalDTO dto) {
+    public ReseñaProfesional actualizar(@PathVariable Integer id, @RequestBody @Valid ReseñaProfesionalDTO dto) {
         return reseñaProfesionalService.actualizar(id, dto);
     }
 

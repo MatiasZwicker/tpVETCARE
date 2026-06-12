@@ -4,6 +4,7 @@ import com.example.PetCare.dto.ProfesionalDTO;
 import com.example.PetCare.enums.Rol;
 import com.example.PetCare.model.Profesional;
 import com.example.PetCare.service.ProfesionalService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +21,7 @@ public class ProfesionalController {
 
     @PostMapping("/crear")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Profesional> crear(@RequestBody Profesional profesional){
+    public ResponseEntity<Profesional> crear(@RequestBody @Valid Profesional profesional){
         return ResponseEntity.ok(profesionalService.crear(profesional));
     }
 
@@ -62,7 +63,7 @@ public class ProfesionalController {
 
     @PutMapping("/actualizar/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Profesional> actualizar(@RequestBody Profesional profesional, @PathVariable int id){
+    public ResponseEntity<Profesional> actualizar(@RequestBody @Valid Profesional profesional, @PathVariable int id){
         return ResponseEntity.ok(profesionalService.actualizar(id, profesional));
     }
 }

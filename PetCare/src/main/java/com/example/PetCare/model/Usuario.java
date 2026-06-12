@@ -2,10 +2,12 @@ package com.example.PetCare.model;
 
 import com.example.PetCare.enums.Rol;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
 
 import java.util.List;
 
@@ -18,12 +20,25 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
     private int idUsuario;
+
+    @NotBlank
     private String nombre;
+
+    @NotBlank
     private String apellido;
+
+    @NotBlank
+    @Email
     private String email;
+
+    @NotBlank
     private String telefono;
+
     private String direccion;
-    @Column(updatable = false) //un usuario no puede cambiar su rol una vez creado
+
+    @NotNull
+    @Column(updatable = false)
     private Rol rol;
+
     private boolean activo;
 }

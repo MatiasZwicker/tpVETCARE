@@ -1,8 +1,8 @@
 package com.example.PetCare.model;
 
-import com.example.PetCare.enums.Estado_Turno;
 import com.example.PetCare.enums.Rol;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Profesional extends Usuario{
+public class Profesional extends Usuario {
+    @NotBlank
     private String matricula;
+
+    @NotBlank
     private String experiencia;
 }
