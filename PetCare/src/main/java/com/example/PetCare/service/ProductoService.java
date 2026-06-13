@@ -32,12 +32,12 @@ public class ProductoService {
         return productoRepository.findByNombre(nombre);
     }
 
-    public List<Producto> findByPrecioBefore(Double precioBefore) {
-        return productoRepository.findByPrecioBefore(precioBefore);
+    public List<Producto> findByPrecioBefore(Double precio) {
+        return productoRepository.findByPrecioLessThan(precio);
     }
 
-    public List<Producto> findByPrecioAfter(Double precioAfter) {
-        return productoRepository.findByPrecioAfter(precioAfter);
+    public List<Producto> findByPrecioAfter(Double precio) {
+        return productoRepository.findByPrecioGreaterThan(precio);
     }
 
     public List<Producto> findByActivo(Boolean activo) {
@@ -85,7 +85,7 @@ public class ProductoService {
     }
 
     public List<Producto> findByStockBefore() {
-        return productoRepository.findByStockBefore(10);
+        return productoRepository.findByStockLessThan(10);
     }
 
     /**

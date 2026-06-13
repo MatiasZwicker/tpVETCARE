@@ -17,6 +17,7 @@ public class Turno {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idTurno;
     private LocalDate fecha;
+    @Enumerated(EnumType.STRING)
     private Estado_Turno estadoTurno;
 
     @ManyToOne

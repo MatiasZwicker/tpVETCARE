@@ -22,11 +22,11 @@ public interface TurnoRepository extends JpaRepository<Turno, Integer> {
 
 
     @Modifying
-    @Query("UPDATE Turno t SET t.estadoTurno = 'Cancelado' WHERE t.idTurno = :idTurno")
+    @Query("UPDATE Turno t SET t.estadoTurno = com.example.PetCare.enums.Estado_Turno.Cancelado WHERE t.idTurno = :idTurno")
     int cancelarTurno(@Param("idTurno") Integer idTurno); // retorna las filas afectadas 0 si no exiiste el turno 1 si modifico
 
     @Modifying
-    @Query("UPDATE Turno t SET t.estadoTurno = 'Confirmado' WHERE t.idTurno = :idTurno")
+    @Query("UPDATE Turno t SET t.estadoTurno = com.example.PetCare.enums.Estado_Turno.Confirmado WHERE t.idTurno = :idTurno")
     int confirmarTurno(@Param("idTurno") Integer idTurno);// retorna las filas afectadas 0 si no exiiste el turno 1 si modifico
 
     // @Modifying le dice a Spring Data JPA que el

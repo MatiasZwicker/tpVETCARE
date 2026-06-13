@@ -1,5 +1,6 @@
 package com.example.PetCare.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class CarritoProducto {
 
     @ManyToOne
     @JoinColumn(name = "id_carrito")
+    @JsonIgnore
     private Carrito carrito;
 
     @ManyToOne

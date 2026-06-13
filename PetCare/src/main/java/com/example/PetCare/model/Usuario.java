@@ -37,6 +37,7 @@ public class Usuario {
     private String direccion;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(updatable = false)
     private Rol rol;
 
