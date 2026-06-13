@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/profesionales")
+@RequestMapping("/api/profesionales")
 @RequiredArgsConstructor
 public class ProfesionalController {
 
@@ -32,7 +32,7 @@ public class ProfesionalController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<ProfesionalDTO>> listarTodos(){
         return ResponseEntity.ok(profesionalService.listarTodosDTO());
     }
