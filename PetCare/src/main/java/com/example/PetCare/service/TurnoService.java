@@ -112,7 +112,7 @@ public class TurnoService {
         Turno entity = new Turno();
         entity.setEstadoTurno(dto.getEstadoTurno());
         entity.setFecha(dto.getFecha());
-        entity.setIdTurno(dto.getId());
+        if (dto.getId() != null) entity.setIdTurno(dto.getId());
         entity.setMascota(mascota);
         entity.setProfesional(profesional);
         entity.setActivo(Boolean.TRUE.equals(dto.getActivo()));

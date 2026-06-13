@@ -29,12 +29,8 @@ public class ReseñaProfesionalService {
 
     /// ABM
     public boolean alta(ReseñaProfesionalDTO dto){
-        Usuario usuario =usuarioRepository.findById(dto.getId_usuario()).orElse(null);
-        Profesional profesional = profesionalRepository.findById(dto.getId_profesional()).orElse(null);
-        if(profesional == null ||  usuario == null){
-            return false;
-        }
-        ReseñaProfesional entity=toEntity(dto,profesional,usuario);
+        Usuario usuario =usuarioRepository.findById(dto.getId_usuario()).orElseThrow(()-> new NoEncontradoException("El usuario no existe"));
+        ReseñaProfesional entity=toEntity(dto,usuario);
         reseñaProfesionalRepository.save(entity);
         return true;
     }
@@ -47,8 +43,7 @@ public class ReseñaProfesionalService {
     }
     public ReseñaProfesional actualizar(Integer id,ReseñaProfesionalDTO dto) {
         Usuario usuario =usuarioRepository.findById(dto.getId_usuario()).orElseThrow(()->new NoEncontradoException("El usuario no existe"));
-        Profesional profesional = profesionalRepository.findById(dto.getId_profesional()).orElseThrow(()->new NoEncontradoException("El profesional no existe"));
-        ReseñaProfesional reseñaProfesional=reseñaProfesionalRepository.findById(id).map(a-> toEntity(dto,profesional,usuario)).orElseThrow(()->new NoEncontradoException("El reseña no existe"));
+        ReseñaProfesional reseñaProfesional=reseñaProfesionalRepository.findById(id).map(a-> toEntity(dto,usuario)).orElseThrow(()->new NoEncontradoException("El reseña no existe"));
         return reseñaProfesionalRepository.save(reseñaProfesional);
     }
 
@@ -102,7 +97,6 @@ public class ReseñaProfesionalService {
     private ReseñaProfesionalDTO toDTO (ReseñaProfesional entity){
         ReseñaProfesionalDTO dto=new ReseñaProfesionalDTO();
         dto.setId(entity.getId());
-        dto.setId_profesional(entity.getProfesional().getIdUsuario());
         dto.setId_usuario(entity.getUsuario().getIdUsuario());
         dto.setFecha(entity.getFecha());
         dto.setTexto(entity.getTexto());
@@ -111,10 +105,9 @@ public class ReseñaProfesionalService {
         return dto;
     }
     /// pasa de dto a entidad
-    private ReseñaProfesional toEntity(ReseñaProfesionalDTO dto, Profesional profesional, Usuario usuario){
+    private ReseñaProfesional toEntity(ReseñaProfesionalDTO dto, Usuario usuario){
         ReseñaProfesional entity=new ReseñaProfesional();
         entity.setId(dto.getId());
-        entity.setProfesional(profesional);
         entity.setUsuario(usuario);
         entity.setFecha(dto.getFecha());
         entity.setTexto(dto.getTexto());
