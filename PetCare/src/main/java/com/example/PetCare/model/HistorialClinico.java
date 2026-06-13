@@ -28,7 +28,7 @@ public class HistorialClinico {
     private Mascota mascota;
 
     @OneToMany(mappedBy = "historialClinico", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @JsonIgnore//Cuando lo leia json habia ciclos infinitos de relaciones entre tablas y esto lo rompe
     private List<Vacuna> vacunas = new ArrayList<>();
 
     @OneToMany(mappedBy = "historialClinico", cascade = CascadeType.ALL, orphanRemoval = true)

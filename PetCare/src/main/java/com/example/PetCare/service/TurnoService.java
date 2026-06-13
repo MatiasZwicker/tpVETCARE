@@ -1,6 +1,7 @@
 package com.example.PetCare.service;
 
 import com.example.PetCare.dto.TurnoDTO;
+import com.example.PetCare.enums.Estado_Turno;
 import com.example.PetCare.exceptions.NoEncontradoException;
 import com.example.PetCare.model.Mascota;
 import com.example.PetCare.model.Profesional;
@@ -86,11 +87,11 @@ public class TurnoService {
     }
 
     public boolean cancelaTurno(Integer idTurno) {
-        return turnoRepository.cancelarTurno(idTurno) > 0;
+        return turnoRepository.cancelarTurno(idTurno, Estado_Turno.CANCELADO) > 0;
     }
 
     public boolean confirmarTurno(Integer idTurno) {
-        return turnoRepository.confirmarTurno(idTurno) > 0;
+        return turnoRepository.confirmarTurno(idTurno, Estado_Turno.CONFIRMADO) > 0;
     }
 
 

@@ -1,5 +1,6 @@
 package com.example.PetCare.repository;
 
+import com.example.PetCare.enums.Estado_Turno;
 import com.example.PetCare.model.Turno;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -22,12 +23,12 @@ public interface TurnoRepository extends JpaRepository<Turno, Integer> {
 
 
     @Modifying
-    @Query("UPDATE Turno t SET t.estadoTurno = com.example.PetCare.enums.Estado_Turno.Cancelado WHERE t.idTurno = :idTurno")
-    int cancelarTurno(@Param("idTurno") Integer idTurno); // retorna las filas afectadas 0 si no exiiste el turno 1 si modifico
+    @Query("UPDATE Turno t SET t.estadoTurno = :estado WHERE t.idTurno = :idTurno")
+    int cancelarTurno(@Param("idTurno") Integer idTurno, @Param("estado") Estado_Turno estado);
 
     @Modifying
-    @Query("UPDATE Turno t SET t.estadoTurno = com.example.PetCare.enums.Estado_Turno.Confirmado WHERE t.idTurno = :idTurno")
-    int confirmarTurno(@Param("idTurno") Integer idTurno);// retorna las filas afectadas 0 si no exiiste el turno 1 si modifico
+    @Query("UPDATE Turno t SET t.estadoTurno = :estado WHERE t.idTurno = :idTurno")
+    int confirmarTurno(@Param("idTurno") Integer idTurno, @Param("estado") Estado_Turno estado);
 
     // @Modifying le dice a Spring Data JPA que el
     // método no es una consulta SELECT, sino una operación de escritura
