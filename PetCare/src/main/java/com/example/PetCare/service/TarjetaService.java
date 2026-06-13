@@ -8,11 +8,13 @@ import com.example.PetCare.repository.TarjetaRepository;
 import com.example.PetCare.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class TarjetaService {
     private final TarjetaRepository tarjetaRepository;

@@ -6,10 +6,12 @@ import com.example.PetCare.exceptions.NoEncontradoException;
 import com.example.PetCare.model.*;
 import com.example.PetCare.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class ReseñaproductoService {
     private final ReseñaProductoRepository repository;
     private final UsuarioRepository usuarioRepository;
@@ -43,9 +45,8 @@ public class ReseñaproductoService {
     public ReseñaProducto actualizar(Integer id,ReseñaProductoDTO dto) {
         Usuario usuario =usuarioRepository.findById(dto.getId_usuario()).orElseThrow(()->new NoEncontradoException("El usuario no existe"));
         Producto producto = productoRepository.findById(dto.getId_producto()).orElseThrow(()->new NoEncontradoException("El producto no existe"));
-        return repository.findById(id)
-                .map(a-> toEntity(dto,producto,usuario))
-                .orElse(null);
+        ReseñaProducto reseñaProducto= repository.findById(id).map(a-> toEntity(dto,producto,usuario)).orElseThrow(()->new NoEncontradoException("La reseña no existe"));
+        return repository.save(reseñaProducto);
     }
 
     public boolean aprobarReseña(Integer id) {
@@ -72,7 +73,7 @@ public class ReseñaproductoService {
     private ReseñaProducto toEntity(ReseñaProductoDTO dto, Producto producto, Usuario usuario){
         ReseñaProducto entity=new ReseñaProducto();
         entity.setId(dto.getId());
-        entity.setActivo(dto.getActivo());
+        entity.setActivo(Boolean.TRUE.equals(dto.getActivo()));
         entity.setComentario(dto.getComentario());
         entity.setPuntuacion(dto.getPuntuacion());
         entity.setFecha(dto.getFecha());

@@ -8,12 +8,14 @@ import com.example.PetCare.repository.*;
 import com.example.PetCare.utils.AuthUtils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
 @Service
+@Transactional
 public class HistorialClinicoService {
 
     private final HistorialClinicoRepository historialClinicoRepository;
@@ -120,6 +122,7 @@ public class HistorialClinicoService {
                     nuevo.setFechaCreacion(LocalDate.now());
                     nuevo.setActivo(true);
                     nuevo.setMascota(mascota);
+                    mascota.setHistorialClinico(nuevo);
                     return historialClinicoRepository.save(nuevo);
                 });
     }

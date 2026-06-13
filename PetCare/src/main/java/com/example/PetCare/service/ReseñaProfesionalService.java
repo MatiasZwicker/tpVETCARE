@@ -2,6 +2,7 @@ package com.example.PetCare.service;
 
 import com.example.PetCare.dto.ReseñaProfesionalDTO;
 import com.example.PetCare.dto.TurnoDTO;
+import com.example.PetCare.exceptions.NoEncontradoException;
 import com.example.PetCare.model.Profesional;
 import com.example.PetCare.model.ReseñaProfesional;
 import com.example.PetCare.model.Usuario;
@@ -9,11 +10,13 @@ import com.example.PetCare.repository.ProfesionalRepository;
 import com.example.PetCare.repository.ReseñaProfesionalRepository;
 import com.example.PetCare.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@Transactional
 public class ReseñaProfesionalService {
     private final ReseñaProfesionalRepository reseñaProfesionalRepository;
     private final UsuarioRepository usuarioRepository;
@@ -43,16 +46,11 @@ public class ReseñaProfesionalService {
         }
         return false;
     }
-    /// *********
     public ReseñaProfesional actualizar(Integer id,ReseñaProfesionalDTO dto) {
-        Usuario usuario =usuarioRepository.findById(dto.getId_usuario()).orElse(null);
-        Profesional profesional = profesionalRepository.findById(dto.getId_profesional()).orElse(null);
-        if(profesional == null ||  usuario == null){
-            return null;
-        }
-        return reseñaProfesionalRepository.findById(id)
-                .map(a-> toEntity(dto,profesional,usuario))
-                .orElse(null);
+        Usuario usuario =usuarioRepository.findById(dto.getId_usuario()).orElseThrow(()->new NoEncontradoException("El usuario no existe"));
+        Profesional profesional = profesionalRepository.findById(dto.getId_profesional()).orElseThrow(()->new NoEncontradoException("El profesional no existe"));
+        ReseñaProfesional reseñaProfesional=reseñaProfesionalRepository.findById(id).map(a-> toEntity(dto,profesional,usuario)).orElseThrow(()->new NoEncontradoException("El reseña no existe"));
+        return reseñaProfesionalRepository.save(reseñaProfesional);
     }
 
     /// Vista
@@ -122,7 +120,7 @@ public class ReseñaProfesionalService {
         entity.setFecha(dto.getFecha());
         entity.setTexto(dto.getTexto());
         entity.setPuntuacion(dto.getPuntuacion());
-        entity.setActivo(dto.getActivo());
+        entity.setActivo(Boolean.TRUE.equals(dto.getActivo()));
         return entity;
     }
 

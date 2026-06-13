@@ -5,10 +5,12 @@ import com.example.PetCare.model.Carrito;
 import com.example.PetCare.model.CarritoProducto;
 import com.example.PetCare.model.Producto;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional
 public class CarritoProductoService {
 
     /**

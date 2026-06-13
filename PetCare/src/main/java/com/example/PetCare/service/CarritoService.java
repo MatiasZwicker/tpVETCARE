@@ -12,11 +12,13 @@ import com.example.PetCare.repository.CarritoRepository;
 import com.example.PetCare.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CarritoService {
     private final CarritoRepository carritoRepository;

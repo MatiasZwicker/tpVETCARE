@@ -7,12 +7,14 @@ import com.example.PetCare.model.Usuario;
 import com.example.PetCare.repository.MascotaRepository;
 import com.example.PetCare.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class MascotaService {
 
     private final MascotaRepository mascotaRepository;
@@ -87,7 +89,7 @@ public class MascotaService {
                     entity.setNombre(dto.getNombre());
                     entity.setEspecie(dto.getEspecie());
                     entity.setRaza(dto.getRaza());
-                    entity.setActivo(dto.getActivo());
+                    entity.setActivo(Boolean.TRUE.equals(dto.getActivo()));
                     entity.setObservaciones(dto.getObservaciones());
                     entity.setSexo(dto.getSexo());
                     entity.setFecha_nacimiento(dto.getFecha_nacimiento());

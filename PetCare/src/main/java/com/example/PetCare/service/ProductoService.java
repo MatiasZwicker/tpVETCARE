@@ -4,9 +4,11 @@ import com.example.PetCare.exceptions.NoEncontradoException;
 import com.example.PetCare.model.Producto;
 import com.example.PetCare.repository.ProductoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Service
+@Transactional//sirve para que todos los save que se hagan se hagan como las transacciones de sql
 public class ProductoService {
     private final ProductoRepository productoRepository;
 

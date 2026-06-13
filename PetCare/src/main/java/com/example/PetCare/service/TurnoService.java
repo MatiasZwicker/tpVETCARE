@@ -9,11 +9,13 @@ import com.example.PetCare.repository.MascotaRepository;
 import com.example.PetCare.repository.ProfesionalRepository;
 import com.example.PetCare.repository.TurnoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@Transactional
 public class TurnoService {
     private final TurnoRepository turnoRepository;
     private final MascotaRepository mascotaRepository;
@@ -79,9 +81,7 @@ public class TurnoService {
     public Turno actualizar(Integer idTurno, TurnoDTO dto) {
         Mascota mascota = mascotaRepository.findById(dto.getId_mascota()).orElseThrow(() -> new NoEncontradoException("Mascot no existe"));
         Profesional profesional = profesionalRepository.findById(dto.getId_profesional()).orElseThrow(() -> new NoEncontradoException("Profesional no existe"));
-        Turno turno = turnoRepository.findById(idTurno)
-                .map(a -> toEntity(dto, mascota, profesional))
-                .orElse(null);
+        Turno turno = turnoRepository.findById(idTurno).map(a -> toEntity(dto, mascota, profesional)).orElseThrow(() -> new NoEncontradoException("El turno no exite"));
         return turnoRepository.save(turno);
     }
 

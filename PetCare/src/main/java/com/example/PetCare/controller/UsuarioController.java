@@ -3,6 +3,7 @@ package com.example.PetCare.controller;
 import com.example.PetCare.model.Usuario;
 import com.example.PetCare.service.UsuarioService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +28,10 @@ public class UsuarioController {
 
     @GetMapping("/buscar/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Usuario buscarPorId(@PathVariable Integer id) {
-        return usuarioService.buscarPorId(id).get();
+    public ResponseEntity<Usuario> buscarPorId(@PathVariable Integer id) {
+        return usuarioService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/buscar/email/{email}")

@@ -6,11 +6,13 @@ import com.example.PetCare.exceptions.NoEncontradoException;
 import com.example.PetCare.model.Profesional;
 import com.example.PetCare.repository.ProfesionalRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ProfesionalService {
     private final ProfesionalRepository profesionalRepository;
 
@@ -25,8 +27,8 @@ public class ProfesionalService {
     public Profesional actualizar(int id, Profesional profesional){
         Profesional existente = profesionalRepository.findById(profesional.getIdUsuario())
                 .orElseThrow(() -> new NoEncontradoException("El profesional no fue encontrado"));
-        profesional.setIdUsuario(id);
-        return profesionalRepository.save(profesional);
+        existente.setIdUsuario(id);
+        return profesionalRepository.save(existente);
     }
 
     public void eliminar (int id){

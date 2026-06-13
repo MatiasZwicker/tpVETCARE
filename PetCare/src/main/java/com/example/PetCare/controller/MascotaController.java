@@ -26,8 +26,10 @@ public class MascotaController {
     }
 
     @GetMapping("/{id}")
-    public MascotaDTO buscarPorId(@PathVariable Integer id) {
-        return mascotaService.buscarPorId(id).get();
+    public ResponseEntity<MascotaDTO> buscarPorId(@PathVariable Integer id) {
+        return mascotaService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/especie/{especie}")
