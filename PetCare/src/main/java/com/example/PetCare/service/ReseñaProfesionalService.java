@@ -43,9 +43,15 @@ public class ReseñaProfesionalService {
     }
     public ReseñaProfesional actualizar(Integer id,ReseñaProfesionalDTO dto) {
         Usuario usuario =usuarioRepository.findById(dto.getId_usuario()).orElseThrow(()->new NoEncontradoException("El usuario no existe"));
-        ReseñaProfesional reseñaProfesional=reseñaProfesionalRepository.findById(id).map(a-> toEntity(dto,usuario)).orElseThrow(()->new NoEncontradoException("El reseña no existe"));
+        ReseñaProfesional reseñaProfesional=reseñaProfesionalRepository.findById(id).orElseThrow(()->new NoEncontradoException("La reseña no existe"));
+        reseñaProfesional.setUsuario(usuario);
+        reseñaProfesional.setFecha(dto.getFecha());
+        reseñaProfesional.setTexto(dto.getTexto());
+        reseñaProfesional.setPuntuacion(dto.getPuntuacion());
+        reseñaProfesional.setActivo(Boolean.TRUE.equals(dto.getActivo()));
         return reseñaProfesionalRepository.save(reseñaProfesional);
     }
+    // (Godoy) Lo mismo que en turnoService actualizar.
 
     /// Vista
     public List<ReseñaProfesionalDTO> listarTodos(){

@@ -80,11 +80,18 @@ public class TurnoService {
 
 
     public TurnoDTO actualizar(Integer idTurno, TurnoDTO dto) {
-        Mascota mascota = mascotaRepository.findById(dto.getId_mascota()).orElseThrow(() -> new NoEncontradoException("Mascot no existe"));
+        Mascota mascota = mascotaRepository.findById(dto.getId_mascota()).orElseThrow(() -> new NoEncontradoException("Mascota no existe"));
         Profesional profesional = profesionalRepository.findById(dto.getId_profesional()).orElseThrow(() -> new NoEncontradoException("Profesional no existe"));
-        Turno turno = turnoRepository.findById(idTurno).map(a -> toEntity(dto, mascota, profesional)).orElseThrow(() -> new NoEncontradoException("El turno no exite"));
+        Turno turno = turnoRepository.findById(idTurno).orElseThrow(() -> new NoEncontradoException("El turno no existe"));
+        turno.setFecha(dto.getFecha());
+        turno.setEstadoTurno(dto.getEstadoTurno());
+        turno.setMascota(mascota);
+        turno.setProfesional(profesional);
+        turno.setActivo(Boolean.TRUE.equals(dto.getActivo()));
         return toDTO(turnoRepository.save(turno));
     }
+    // Godoy
+    // Ahora el método busca la entidad existente y muta sus campos directamente. Como la entidad ya tiene un ID válido, save() hace un UPDATE en vez de un INSERT.
 
     public boolean cancelaTurno(Integer idTurno) {
         return turnoRepository.cancelarTurno(idTurno, Estado_Turno.CANCELADO) > 0;
