@@ -24,5 +24,10 @@ public class ReseñaProfesional {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
+    @ManyToOne
+    @JoinColumn(name = "id_profesional")
+    private Profesional profesional;
+    // Reseña estaba asociada a un usuario pero no a un profesional.
+
 }
 
