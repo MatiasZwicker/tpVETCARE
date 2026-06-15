@@ -1,6 +1,7 @@
 package com.example.PetCare.controller;
 
 import com.example.PetCare.dto.MascotaDTO;
+import com.example.PetCare.exceptions.NoEncontradoException;
 import com.example.PetCare.model.Mascota;
 import com.example.PetCare.service.MascotaService;
 import jakarta.validation.Valid;
@@ -51,14 +52,14 @@ public class MascotaController {
         boolean creado = mascotaService.crear(dto);
         if (creado) {
             return dto;
-        }else return null;
+        } else throw new NoEncontradoException("No se pudo crear la mascota, el usuario no existe");
     }
 
     @PutMapping("/{id}")
     public MascotaDTO actualizar(@PathVariable Integer id,@RequestBody @Valid MascotaDTO dto) {
         boolean actualizado = mascotaService.actualizar(id, dto);
-        if (actualizado){return dto;}
-        return null;
+        if (actualizado) { return dto; }
+        else throw new NoEncontradoException("No se pudo actualizar la mascota, el usuario no existe");
     }
     @PutMapping("/{id}/observaciones")
     public MascotaDTO actualizaObservaciones(@PathVariable Integer id,@RequestBody String obs){
