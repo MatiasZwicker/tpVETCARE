@@ -1,6 +1,7 @@
 package com.example.PetCare.controller;
 
 import com.example.PetCare.dto.RegistroRequest;
+import com.example.PetCare.enums.EstadoProfesional;
 import com.example.PetCare.enums.Rol;
 import com.example.PetCare.model.Profesional;
 import com.example.PetCare.model.Usuario;
@@ -90,7 +91,10 @@ public class AuthController {
             profesional.setEmail(request.getEmail());
             profesional.setTelefono(request.getTelefono());
             profesional.setRol(request.getRol());
-            profesional.setActivo(true);
+            // Estado inicial: PENDIENTE. El admin debe aprobarlo antes de que pueda operar.
+            // activo = false porque no puede ofrecer servicios hasta ser aprobado.
+            profesional.setActivo(false);
+            profesional.setEstado(EstadoProfesional.PENDIENTE);
             profesional.setMatricula(request.getMatricula());
             profesional.setExperiencia(request.getExperiencia());
             profesionalRepository.save(profesional);

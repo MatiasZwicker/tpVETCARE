@@ -1,6 +1,7 @@
 package com.example.PetCare.controller;
 
 import com.example.PetCare.dto.ProfesionalDTO;
+import com.example.PetCare.enums.EstadoProfesional;
 import com.example.PetCare.enums.Rol;
 import com.example.PetCare.model.Profesional;
 import com.example.PetCare.service.ProfesionalService;
@@ -65,5 +66,63 @@ public class ProfesionalController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProfesionalDTO> actualizar(@RequestBody @Valid Profesional profesional, @PathVariable int id){
         return ResponseEntity.ok(profesionalService.toDTO(profesionalService.actualizar(id, profesional)));
+    }
+
+    // ==================== ENDPOINTS DE APROBACIÓN (SOLO ADMIN) ====================
+
+    /**
+     * Lista todos los profesionales pendientes de aprobación.
+     * El admin usa este endpoint para ver quién necesita revisión.
+     *
+     * Ejemplo: GET /api/profesionales/pendientes
+     */
+    @GetMapping("/pendientes")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ProfesionalDTO>> listarPendientes() {
+        return ResponseEntity.ok(profesionalService.buscarPendientes());
+    }
+
+    /**
+     * Lista todos los profesionales en un estado específico (PENDIENTE, APROBADO, RECHAZADO).
+     * Permite al admin filtrar por estado.
+     *
+     * Ejemplo: GET /api/profesionales/estado/APROBADO
+     */
+    @GetMapping("/estado/{estado}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ProfesionalDTO>> listarPorEstado(@PathVariable EstadoProfesional estado) {
+        return ResponseEntity.ok(profesionalService.buscarPorEstado(estado));
+    }
+
+    /**
+     * Aprueba un profesional: cambia su estado a APROBADO y lo activa.
+     * Una vez aprobado, el profesional puede ofrecer servicios.
+     *
+     * Ejemplo: PUT /api/profesionales/1/aprobar
+     */
+    @PutMapping("/{id}/aprobar")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> aprobar(@PathVariable int id) {
+        boolean aprobado = profesionalService.aprobar(id);
+        if (aprobado) {
+            return ResponseEntity.ok("Profesional aprobado exitosamente");
+        }
+        return ResponseEntity.badRequest().body("No se pudo aprobar al profesional");
+    }
+
+    /**
+     * Rechaza un profesional: cambia su estado a RECHAZADO y lo desactiva.
+     * Un profesional rechazado no puede ofrecer servicios.
+     *
+     * Ejemplo: PUT /api/profesionales/1/rechazar
+     */
+    @PutMapping("/{id}/rechazar")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> rechazar(@PathVariable int id) {
+        boolean rechazado = profesionalService.rechazar(id);
+        if (rechazado) {
+            return ResponseEntity.ok("Profesional rechazado exitosamente");
+        }
+        return ResponseEntity.badRequest().body("No se pudo rechazar al profesional");
     }
 }
