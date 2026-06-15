@@ -12,6 +12,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -47,12 +53,39 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            // Habilita CORS para que los navegadores permitan peticiones cross-origin.
+            // Sin esto, un frontend en otro puerto/dominio no podría llamar a la API.
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            // CSRF se deshabilita porque es una API REST que no usa formularios HTML.
+            // Los tokens CSRF solo son necesarios cuando el navegador envía cookies automáticamente.
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+                // El endpoint de registro es público (no requiere autenticación)
                 .requestMatchers(HttpMethod.POST, "/api/auth/registro").permitAll()
+                // Todos los demás endpoints requieren autenticación
                 .anyRequest().authenticated()
             )
+            // HTTP Basic Auth: envía username:password en cada request via header.
+            // IMPORTANTE: Solo es seguro si se usa HTTPS, ya que el base64 no es encriptación.
             .httpBasic(Customizer.withDefaults());
         return http.build();
+    }
+
+    /**
+     * Configuración CORS: define qué orígenes, métodos HTTP y headers están permitidos.
+     * En producción, reemplizá "*" por los dominios específicos de tu frontend.
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        // Permitir todos los orígenes en desarrollo. En producción, especificá dominios concretos.
+        config.setAllowedOrigins(List.of("*"));
+        // Métodos HTTP que el frontend puede usar
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // Headers que el frontend puede enviar (incluye Authorization para Basic Auth)
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 }
