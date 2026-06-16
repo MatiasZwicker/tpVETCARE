@@ -1,16 +1,12 @@
 package com.example.PetCare.service;
 
-import com.example.PetCare.dto.CarritoDTO;
-import com.example.PetCare.dto.CarritoProductoDTO;
-import com.example.PetCare.dto.GananciaMensualDTO;
-import com.example.PetCare.dto.ProductoMasVendidoDTO;
+import com.example.PetCare.dto.*;
 import com.example.PetCare.enums.Estado_Carrito;
+import com.example.PetCare.enums.Metodo_Pago;
 import com.example.PetCare.exceptions.NoEncontradoException;
-import com.example.PetCare.model.Carrito;
-import com.example.PetCare.model.CarritoProducto;
-import com.example.PetCare.model.Producto;
-import com.example.PetCare.model.Usuario;
+import com.example.PetCare.model.*;
 import com.example.PetCare.repository.CarritoRepository;
+import com.example.PetCare.repository.TarjetaRepository;
 import com.example.PetCare.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,10 +20,12 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class CarritoService {
+
     private final CarritoRepository carritoRepository;
     private final UsuarioRepository usuarioRepository;
     private final ProductoService productoService;
     private final CarritoProductoService carritoProductoService;
+    private final TarjetaService tarjetaService;
 
     /**
      * Busca el carrito activo (estado CARRITO) del usuario. Si no existe, lo crea y lo asocia al usuario.
@@ -98,22 +96,43 @@ public class CarritoService {
     }
 
     /**
-     * Cierra la compra: valida que el carrito no esté vacío, resta las cantidades del stock físico de los productos,
-     * pasa el carrito a estado 'ENVIO' y genera un nuevo carrito vacío para futuras compras del usuario.
+     * Valida el carrito y el metodo de pago antes de ejecutar la compra.
+     * Si el metodo de pago es TARJETA, verifica que la tarjeta exista,
+     * pertenezca al usuario y esté activa.
+     * No modifica ningún dato en la base de datos.
      */
-    public CarritoDTO realizarCompra(int idUsuario){
-        Carrito carrito = obtenerOCrearCarrito(idUsuario);
+    public CarritoDTO confirmarCompra(CompraRequestDTO dto){
+        Carrito carrito = obtenerOCrearCarrito(dto.getId_usuario());
+
         if(carrito.getItems().isEmpty()){
             throw new NoEncontradoException("El carrito está vacío");
         }
+
+        if(dto.getMetodoPago() == Metodo_Pago.TARJETA){
+            tarjetaService.resolverPagoConTarjeta(dto);
+        }
+
+        return toDTO(carrito);
+    }
+
+    /**
+     * Cierra la compra: valida que el carrito no esté vacío, resta las cantidades del stock físico de los productos,
+     * pasa el carrito a estado 'ENVIO' y genera un nuevo carrito vacío para futuras compras del usuario.
+     */
+    public CarritoDTO realizarCompra(CompraRequestDTO dto){
+        confirmarCompra(dto);
+        Carrito carrito = obtenerOCrearCarrito(dto.getId_usuario());
+
+
         for(CarritoProducto productos : carrito.getItems()){
             productoService.restaStock(productos.getProducto().getId(), productos.getCantidad());
         }
 
         carrito.setEstado(Estado_Carrito.ENVIO);
+        carrito.setMetodoPago(dto.getMetodoPago());
         carrito.setFechaActualizacion(LocalDate.now());
         carritoRepository.save(carrito);
-        obtenerOCrearCarrito(idUsuario);
+        obtenerOCrearCarrito(dto.getId_usuario());
         return toDTO(carrito);
     }
 

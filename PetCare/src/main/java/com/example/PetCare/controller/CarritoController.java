@@ -1,6 +1,7 @@
 package com.example.PetCare.controller;
 
 import com.example.PetCare.dto.CarritoDTO;
+import com.example.PetCare.dto.CompraRequestDTO;
 import com.example.PetCare.dto.GananciaMensualDTO;
 import com.example.PetCare.dto.ProductoMasVendidoDTO;
 import com.example.PetCare.service.CarritoService;
@@ -72,9 +73,10 @@ public class CarritoController {
      * Confirma la compra: descuenta stock, cambia estado a ENVIO y crea un carrito nuevo vacío.
      */
     @PostMapping("/comprar")
-    public CarritoDTO realizarCompra() {
+    public CarritoDTO realizarCompra(@RequestBody CompraRequestDTO dto) {
         Usuario usuario = authUtils.getCurrentUsuario();
-        return carritoService.realizarCompra(usuario.getIdUsuario());
+        dto.setId_usuario(usuario.getIdUsuario());
+        return carritoService.realizarCompra(dto);
     }
 
     /**
