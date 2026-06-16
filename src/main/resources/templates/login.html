@@ -101,65 +101,17 @@
 
             <!-- REGISTER FORM -->
             <div id="registerForm" class="form-container">
-                <form action="/registrar" method="post">
-                    <div class="role-selector">
-                        <label class="role-label">Registrarse como</label>
-                        <div class="role-options">
-                            <label class="role-card">
-                                <input type="radio" name="rol" value="dueno" checked>
-                                <div class="role-content">
-                                    <span class="role-icon">👤</span>
-                                    <span class="role-text">Dueño</span>
-                                </div>
-                            </label>
-                            <label class="role-card">
-                                <input type="radio" name="rol" value="veterinario">
-                                <div class="role-content">
-                                    <span class="role-icon">👨‍⚕️</span>
-                                    <span class="role-text">Veterinario</span>
-                                </div>
-                            </label>
-                            <label class="role-card">
-                                <input type="radio" name="rol" value="administrador">
-                                <div class="role-content">
-                                    <span class="role-icon">⚙️</span>
-                                    <span class="role-text">Admin</span>
-                                </div>
-                            </label>
-                            <label class="role-card">
-                                <input type="radio" name="rol" value="paseador">
-                                <div class="role-content">
-                                    <span class="role-icon">🐕</span>
-                                    <span class="role-text">Paseador</span>
-                                </div>
-                            </label>
-                            <label class="role-card">
-                                <input type="radio" name="rol" value="peluquero">
-                                <div class="role-content">
-                                    <span class="role-icon">✂️</span>
-                                    <span class="role-text">Peluquero</span>
-                                </div>
-                            </label>
-                            <label class="role-card">
-                                <input type="radio" name="rol" value="adiestrador">
-                                <div class="role-content">
-                                    <span class="role-icon">🎯</span>
-                                    <span class="role-text">Adiestrador</span>
-                                </div>
-                            </label>
-                            <label class="role-card">
-                                <input type="radio" name="rol" value="cuidador">
-                                <div class="role-content">
-                                    <span class="role-icon">🏠</span>
-                                    <span class="role-text">Cuidador</span>
-                                </div>
-                            </label>
-                        </div>
+                <form action="/register" method="post">
+                    <input type="hidden" name="rol" value="usuario">
+
+                    <div class="input-group">
+                        <label for="reg-nombre">Nombre</label>
+                        <input type="text" id="reg-nombre" name="nombre" placeholder="Juan" required>
                     </div>
 
                     <div class="input-group">
-                        <label for="reg-nombre">Nombre completo</label>
-                        <input type="text" id="reg-nombre" name="nombre" placeholder="Juan Pérez" required>
+                        <label for="reg-apellido">Apellido</label>
+                        <input type="text" id="reg-apellido" name="apellido" placeholder="Pérez" required>
                     </div>
 
                     <div class="input-group">

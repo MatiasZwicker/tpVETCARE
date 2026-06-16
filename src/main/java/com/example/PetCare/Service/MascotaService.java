@@ -30,8 +30,12 @@ public class MascotaService {
         return filasAfectadas > 0;
     }
 
-    public void guardar(Mascota mascota){
-        System.out.println("Mascota guardada: " + mascota.getNombre());
+    public List<Mascota> listarPorUsuario(Integer idUsuario) {
+        return mascotaDAO.listarPorUsuario(idUsuario);
+    }
+
+    public boolean guardar(Mascota mascota){
+        return mascotaDAO.crear(mascota) > 0;
     }
     public boolean actualizar(Integer idMascota, Mascota mascota) {
         int filasAfectadas = mascotaDAO.actualizar(idMascota, mascota);

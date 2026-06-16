@@ -25,17 +25,22 @@ public class MascotaDAO  {
         m.setRaza(rs.getString("raza"));
         m.setEdad(rs.getInt("edad"));
         m.setPeso(rs.getDouble("peso"));
-        m.setIdUsuario(rs.getInt("id_usuario"));
+        m.setIdUsuario(rs.getInt("id_cliente"));
         return m;
     };
 
     public List<Mascota> mascotaList(){
-        String sql="SELECT * FROM mascota WHERE activo=true";
-        return jdbcTemplate.query(sql,mascotaRowMapper);
+        String sql = "SELECT * FROM mascota";
+        return jdbcTemplate.query(sql, mascotaRowMapper);
+    }
+
+    public List<Mascota> listarPorUsuario(Integer idUsuario) {
+        String sql = "SELECT * FROM mascota WHERE id_cliente = ?";
+        return jdbcTemplate.query(sql, mascotaRowMapper, idUsuario);
     }
     public Optional<Mascota> buscarPorId(Integer idMascota) {
         String sql = """
-                SELECT id_mascota, nombre, especie, raza, edad, peso, id_usuario
+                SELECT id_mascota, nombre, especie, raza, edad, peso, id_cliente
                 FROM mascota
                 WHERE id_mascota = ?
                 """;
@@ -49,7 +54,7 @@ public class MascotaDAO  {
     public int crear(Mascota mascota) {
         String sql = """
                 INSERT INTO mascota
-                (nombre, especie, raza, edad, peso, id_usuario)
+                (nombre, especie, raza, edad, peso, id_cliente)
                 VALUES (?, ?, ?, ?, ?, ?)
                 """;
 
@@ -68,7 +73,7 @@ public class MascotaDAO  {
     public int actualizar(Integer idMascota, Mascota mascota) {
         String sql = """
                 UPDATE mascota
-                SET nombre = ?, especie = ?, raza = ?, edad = ?, peso = ?, id_usuario = ?
+                SET nombre = ?, especie = ?, raza = ?, edad = ?, peso = ?, id_cliente = ?
                 WHERE id_mascota = ?
                 """;
 

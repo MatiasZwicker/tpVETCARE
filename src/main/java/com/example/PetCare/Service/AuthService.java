@@ -17,18 +17,20 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Función para registrar un usuario común desde el formulario público.
-    // Solo permite crear usuarios con rol USUARIO. Rechaza cualquier intento de registro
-    // con roles profesionales (VETERINARIO, PASEADOR, etc.) o ADMINISTRADOR.
-    // Verifica que el email no esté duplicado. La contraseña se guarda hasheada con BCrypt.
-    // - Matias Z.
+    /*
+     * Registra un usuario común desde el formulario público.
+     * Solo permite rol USUARIO. Los profesionales deben pasar por el
+     * proceso de postulación y aprobación.
+     * Verifica email duplicado y hashea la contraseña con BCrypt.
+     */
     public Usuario registrar(String nombre, String apellido, String email, String password, RolUsuario rol) {
         if (rol != RolUsuario.USUARIO) {
             throw new IllegalArgumentException("El registro público solo está disponible para usuarios. Los profesionales deben postularse.");
         }
 
+        // Verifica que el email no esté ya registrado
         if (usuarioRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("El email ya está registrado en  el sistema");
+            throw new IllegalArgumentException("El email ya está registrado en el sistema");
         }
 
         Usuario usuario = new Usuario();
@@ -42,23 +44,26 @@ public class AuthService {
         return usuarioRepository.save(usuario);
     }
 
-    /* Función para autenticar un usuario al iniciar sesión.*/
-    // Busca al usuario por email, verifica que esté activo, que la contraseña
-    // coincida y que el rol seleccionado en el formulario
-    // sea exactamente el mismo que tiene asignado en la base de datos.
-    // - Matias Z.
+    /*
+     * Autentica un usuario al iniciar sesión.
+     * Verifica: email existente, usuario activo, contraseña correcta,
+     * y que el rol seleccionado coincida con el asignado en BD.
+     */
     public Usuario autenticar(String email, String password, RolUsuario rol) {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Email no registrado"));
 
+        // Verifica que la cuenta esté activa
         if (!usuario.isActivo()) {
             throw new IllegalArgumentException("Usuario desactivado");
         }
 
+        // Verifica la contraseña contra el hash BCrypt
         if (!passwordEncoder.matches(password, usuario.getPassword())) {
             throw new IllegalArgumentException("Contraseña incorrecta. Intente nuevamente");
         }
 
+        // Verifica que el rol seleccionado coincida
         if (usuario.getRol() != rol) {
             throw new IllegalArgumentException("El rol seleccionado no coincide");
         }
@@ -66,10 +71,11 @@ public class AuthService {
         return usuario;
     }
 
-    // Crea un usuario profesional cuando el administrador aprueba una postulación.
-    // Asigna el rol solicitado, una contraseña default (PetCare123) y marca al
-    // usuario para que deba cambiarla en su primer inicio de sesión.
-    // - Matias Z.
+    /*
+     * Crea un usuario profesional cuando el admin/ dueño aprueba una postulación.
+     * Asigna contraseña default (PetCare123) y marca debeCambiarPassword=true
+     * para forzar el cambio en el primer inicio de sesión.
+     */
     public Usuario crearUsuarioProfesional(String nombre, String apellido, String email, RolUsuario rol) {
         if (usuarioRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("El email ya está registrado en el sistema");
@@ -82,28 +88,31 @@ public class AuthService {
         usuario.setPassword(passwordEncoder.encode("PetCare123"));
         usuario.setRol(rol);
         usuario.setActivo(true);
-        usuario.setDebeCambiarPassword(true); //bandera que indica que el profesional aun debe cambiar la contraseña
+        usuario.setDebeCambiarPassword(true);
 
         return usuarioRepository.save(usuario);
     }
 
-    // Cambia la contraseña de un usuario y desactiva la bandera debeCambiarPassword.
-    // Se usa cuando un profesional inicia sesión por primera vez con la contraseña default.
-    // - Matias Z.
+    /*
+     * Cambia la contraseña de un usuario y desactiva debeCambiarPassword.
+     * Se usa cuando un profesional inicia sesión por primera vez.
+     */
     public void cambiarPassword(Usuario usuario, String nuevaPassword) {
         usuario.setPassword(passwordEncoder.encode(nuevaPassword));
         usuario.setDebeCambiarPassword(false);
         usuarioRepository.save(usuario);
     }
 
-
-    // Crea un usuario con rol ADMINISTRADOR.
-    // Verifica que el email no esté duplicado y lanza excepción si ya existe,
-    // para que el controller pueda mostrar el mensaje de error al usuario.
-    // - Matias Z.
+    /*
+     * Crea un usuario con rol ADMINISTRADOR.
+     * Usado por el DUENO desde su dashboard.
+     * Retorna null si el email ya existe (en vez de lanzar excepción)
+     * para que el controller pueda mostrar el error sin romper la página.
+     */
     public Usuario crearAdministrador(String nombre, String apellido, String email, String password){
+        // Verifica email duplicado
         if (usuarioRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("El email ya está registrado en el sistema");
+            return null; // Retorna null en vez de exception para evitar 500
         }
 
         Usuario usuario = new Usuario();
@@ -114,15 +123,22 @@ public class AuthService {
         usuario.setRol(RolUsuario.ADMINISTRADOR);
         usuario.setActivo(true);
         usuario.setDebeCambiarPassword(false);
+
         return usuarioRepository.save(usuario);
     }
-    // Misma lógica pero con rol DUENO
-    // - Matias Z.
+
+    /*
+     * Crea un usuario con rol DUENO.
+     * Usado por el ADMINISTRADOR desde su dashboard.
+     * Retorna null si el email ya existe.
+     */
     public Usuario crearDueno(String nombre, String apellido, String email, String password){
-        if  (usuarioRepository.existsByEmail(email)) {
+        // Verifica email duplicado
+        if (usuarioRepository.existsByEmail(email)) {
             System.out.printf("Usuario existente en el sistema %s\n", email);
-            return null;
+            return null; // Retorna null en vez de exception
         }
+
         Usuario usuario = new Usuario();
         usuario.setNombre(nombre);
         usuario.setApellido(apellido);
@@ -131,8 +147,8 @@ public class AuthService {
         usuario.setRol(RolUsuario.DUENO);
         usuario.setActivo(true);
         usuario.setDebeCambiarPassword(false);
-        usuarioRepository.save(usuario);
-        return usuario;
+
+        return usuarioRepository.save(usuario);
     }
 
 }
