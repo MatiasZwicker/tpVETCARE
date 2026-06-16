@@ -42,4 +42,6 @@ public class Usuario {
     private Rol rol;
 
     private Boolean activo;
+
+    private String password;
 }
