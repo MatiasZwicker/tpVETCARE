@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,6 +31,8 @@ public class AuthController {
     private static final Set<Rol> ROLES_PROFESIONALES = Set.of(
         Rol.VETERINARIO, Rol.PASEADOR, Rol.PELUQUERO, Rol.ADIESTRADOR, Rol.CUIDADOR
     );
+
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     private final UserDetailsManager userDetailsManager;
     private final PasswordEncoder passwordEncoder;
@@ -48,67 +52,72 @@ public class AuthController {
     @PostMapping("/registro")
     @Transactional
     public ResponseEntity<Map<String, String>> registrar(@RequestBody @Valid RegistroRequest request) {
-        // No se permite auto-registro como ADMIN
-        if (request.getRol() == Rol.ADMIN) {
-            return ResponseEntity.badRequest().body(Map.of("error", "No se permite auto-registro como ADMIN"));
-        }
-
-        // Verifica si el email ya está registrado
-        if (userDetailsManager.userExists(request.getEmail())) {
-            return ResponseEntity.badRequest().body(Map.of("error", "El email ya está registrado"));
-        }
-
-        // Validar que los profesionales envíen matrícula y experiencia
-        boolean esProfesional = ROLES_PROFESIONALES.contains(request.getRol());
-        if (esProfesional) {
-            if (request.getMatricula() == null || request.getMatricula().isBlank()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Los profesionales deben enviar matrícula"));
+        try {
+            // No se permite auto-registro como ADMIN
+            if (request.getRol() == Rol.ADMIN) {
+                return ResponseEntity.badRequest().body(Map.of("error", "No se permite auto-registro como ADMIN"));
             }
-            if (request.getExperiencia() == null || request.getExperiencia().isBlank()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Los profesionales deben enviar experiencia"));
+
+            // Verifica si el email ya está registrado
+            if (userDetailsManager.userExists(request.getEmail())) {
+                return ResponseEntity.badRequest().body(Map.of("error", "El email ya está registrado"));
             }
+
+            // Validar que los profesionales envíen matrícula y experiencia
+            boolean esProfesional = ROLES_PROFESIONALES.contains(request.getRol());
+            if (esProfesional) {
+                if (request.getMatricula() == null || request.getMatricula().isBlank()) {
+                    return ResponseEntity.badRequest().body(Map.of("error", "Los profesionales deben enviar matrícula"));
+                }
+                if (request.getExperiencia() == null || request.getExperiencia().isBlank()) {
+                    return ResponseEntity.badRequest().body(Map.of("error", "Los profesionales deben enviar experiencia"));
+                }
+            }
+
+            // Hashea la contraseña con prefijo {bcrypt}
+            String hash = passwordEncoder.encode(request.getPassword());
+
+            // Guarda en las tablas users y authorities de Spring Security
+            userDetailsManager.createUser(
+                User.builder()
+                    .username(request.getEmail())
+                    .password(hash)
+                    .roles(request.getRol().name())
+                    .build()
+            );
+
+            // Guarda los datos del negocio en la tabla de JPA
+            // Si el rol es profesional, crea un Profesional (con matrícula y experiencia)
+            // Si el rol es DUENIO, crea un Usuario normal
+            if (esProfesional) {
+                Profesional profesional = new Profesional();
+                profesional.setNombre(request.getNombre());
+                profesional.setApellido(request.getApellido());
+                profesional.setEmail(request.getEmail());
+                profesional.setTelefono(request.getTelefono());
+                profesional.setRol(request.getRol());
+                // Estado inicial: PENDIENTE. El admin debe aprobarlo antes de que pueda operar.
+                // activo = false porque no puede ofrecer servicios hasta ser aprobado.
+                profesional.setActivo(false);
+                profesional.setEstado(EstadoProfesional.PENDIENTE);
+                profesional.setMatricula(request.getMatricula());
+                profesional.setExperiencia(request.getExperiencia());
+                profesionalRepository.save(profesional);
+            } else {
+                Usuario usuario = new Usuario();
+                usuario.setNombre(request.getNombre());
+                usuario.setApellido(request.getApellido());
+                usuario.setEmail(request.getEmail());
+                usuario.setTelefono(request.getTelefono());
+                usuario.setRol(request.getRol());
+                usuario.setActivo(true);
+                usuarioRepository.save(usuario);
+            }
+
+            return ResponseEntity.ok(Map.of("mensaje", "Usuario registrado exitosamente"));
+        } catch (Exception e) {
+            log.error("Error al registrar usuario: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body(Map.of("error", "Error interno del servidor: " + e.getMessage()));
         }
-
-        // Hashea la contraseña con prefijo {bcrypt}
-        String hash = passwordEncoder.encode(request.getPassword());
-
-        // Guarda en las tablas users y authorities de Spring Security
-        userDetailsManager.createUser(
-            User.builder()
-                .username(request.getEmail())
-                .password(hash)
-                .roles(request.getRol().name())
-                .build()
-        );
-
-        // Guarda los datos del negocio en la tabla de JPA
-        // Si el rol es profesional, crea un Profesional (con matrícula y experiencia)
-        // Si el rol es DUENIO, crea un Usuario normal
-        if (esProfesional) {
-            Profesional profesional = new Profesional();
-            profesional.setNombre(request.getNombre());
-            profesional.setApellido(request.getApellido());
-            profesional.setEmail(request.getEmail());
-            profesional.setTelefono(request.getTelefono());
-            profesional.setRol(request.getRol());
-            // Estado inicial: PENDIENTE. El admin debe aprobarlo antes de que pueda operar.
-            // activo = false porque no puede ofrecer servicios hasta ser aprobado.
-            profesional.setActivo(false);
-            profesional.setEstado(EstadoProfesional.PENDIENTE);
-            profesional.setMatricula(request.getMatricula());
-            profesional.setExperiencia(request.getExperiencia());
-            profesionalRepository.save(profesional);
-        } else {
-            Usuario usuario = new Usuario();
-            usuario.setNombre(request.getNombre());
-            usuario.setApellido(request.getApellido());
-            usuario.setEmail(request.getEmail());
-            usuario.setTelefono(request.getTelefono());
-            usuario.setRol(request.getRol());
-            usuario.setActivo(true);
-            usuarioRepository.save(usuario);
-        }
-
-        return ResponseEntity.ok(Map.of("mensaje", "Usuario registrado exitosamente"));
     }
 }
