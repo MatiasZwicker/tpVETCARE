@@ -8,7 +8,6 @@ import lombok.Data;
 
 @Data
 public class TarjetaRequestDTO {
-    @NotNull
     private Integer idUsuario;
 
     @NotBlank

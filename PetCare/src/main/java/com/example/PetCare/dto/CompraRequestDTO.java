@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompraRequestDTO {
-    private int id_usuario;
+    private Integer id_usuario;
     private Metodo_Pago metodoPago;
 
     //si elije tarjeta
