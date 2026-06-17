@@ -21,15 +21,10 @@ function Login() {
     setError('')
     setLoading(true)
     try {
-      const res = await api.auth.login(loginForm.email, loginForm.password)
-      if (res.ok || res.type === 'opaqueredirect') {
-        navigate('/dashboard')
-      } else {
-        const text = await res.text()
-        setError(text || 'Credenciales inválidas')
-      }
-    } catch {
-      setError('Error de conexión')
+      const data = await api.auth.login(loginForm.email, loginForm.password)
+      navigate('/dashboard')
+    } catch (err) {
+      setError(err.message || 'Credenciales inválidas')
     } finally {
       setLoading(false)
     }

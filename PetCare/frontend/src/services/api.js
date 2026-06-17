@@ -33,15 +33,7 @@ export const api = {
   delete: (endpoint) => request(endpoint, { method: 'DELETE' }),
 
   auth: {
-    login: (email, password) => {
-      const params = new URLSearchParams({ username: email, password })
-      return fetch(`${API_URL}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        credentials: 'include',
-        redirect: 'manual',
-      })
-    },
+    login: (email, password) => api.post('/api/auth/login', { email, password }),
     registro: (data) => api.post('/api/auth/registro', data),
     me: () => api.get('/api/auth/me'),
     logout: () => fetch(`${API_URL}/logout`, { method: 'POST', credentials: 'include' }),

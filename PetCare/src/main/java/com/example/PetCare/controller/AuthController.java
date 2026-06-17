@@ -7,10 +7,17 @@ import com.example.PetCare.model.Profesional;
 import com.example.PetCare.model.Usuario;
 import com.example.PetCare.repository.ProfesionalRepository;
 import com.example.PetCare.repository.UsuarioRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,13 +44,49 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final UsuarioRepository usuarioRepository;
     private final ProfesionalRepository profesionalRepository;
+    private final AuthenticationManager authenticationManager;
 
     public AuthController(PasswordEncoder passwordEncoder,
                           UsuarioRepository usuarioRepository,
-                          ProfesionalRepository profesionalRepository) {
+                          ProfesionalRepository profesionalRepository,
+                          AuthenticationManager authenticationManager) {
         this.passwordEncoder = passwordEncoder;
         this.usuarioRepository = usuarioRepository;
         this.profesionalRepository = profesionalRepository;
+        this.authenticationManager = authenticationManager;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> body, HttpServletRequest request) {
+        String email = body.get("email");
+        String password = body.get("password");
+
+        if (email == null || password == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Email y contraseña son requeridos"));
+        }
+
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, password)
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            HttpSession session = request.getSession(true);
+            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                SecurityContextHolder.getContext());
+
+            Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("mensaje", "Inicio de sesión exitoso");
+            response.put("nombre", usuario.getNombre());
+            response.put("email", usuario.getEmail());
+            response.put("rol", usuario.getRol().name());
+
+            return ResponseEntity.ok(response);
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(401).body(Map.of("error", "Credenciales inválidas"));
+        }
     }
 
     @GetMapping("/me")
